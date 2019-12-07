@@ -22,6 +22,15 @@ export default class ClientObjectController {
         
         this.input_sequence_number = 0;
         this.pending_inputs = [];
+        /* some more commands to know
+		//app.stage.removeChild(anySprite)
+		//anySprite.visible = false;
+
+		// place where WEB-GL texture caches are stored:
+		//let texture = PIXI.utils.TextureCache["images/anySpriteImage.png"];
+		//let sprite = new PIXI.Sprite(texture);
+
+        */
     }
 
     getInput(){
