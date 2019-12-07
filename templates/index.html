@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Online Game</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="{{url_for('static',filename='js/lib/pixi.js')}}"></script>
+
+
+    <!-- Importing Game Modules -->
+    <script type="module" src="{{url_for('static',filename='js/clientcontroller.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/clientinput.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/entity.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/matchcontroller.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/renderer.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/serverconnection.js')}}"></script>
+
+    <!-- Game Starts Running Here -->
+    <script type="module" src="{{url_for('static',filename='js/app.js')}}"></script>
+  </head>
+  <body>
+    Hello, this will be an online game, You just wait
+    <div id="display"></div>
+  </body>
+</html>
