@@ -7,7 +7,6 @@ export default class Entity {
         this.x = x;
         this.y = y;
         this.entity_id = entity_id;
-        this.speed = 10;
         this.sprite = null
         //currently below is not implemeneted. will be used for dead reckoning
         this.position_buffer = []
@@ -46,6 +45,13 @@ export default class Entity {
 
     getPosition(){
         return `${this.x},${this.y}`
+    }
+
+    getX(){
+        return this.x;
+    }
+    getY(){
+        return this.y;
     }
 
     // Will apply the given movement

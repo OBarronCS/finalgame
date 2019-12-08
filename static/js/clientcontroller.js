@@ -22,6 +22,7 @@ export default class ClientObjectController {
         
         this.input_sequence_number = 0;
         this.pending_inputs = [];
+        this.speed = 300;
         /* some more commands to know
 		//app.stage.removeChild(anySprite)
 		//anySprite.visible = false;
@@ -42,15 +43,32 @@ export default class ClientObjectController {
             return;
         }
 
-        if(this.input.movement_positive()){
-            //Right now, this does nothing mate
-            let movement = this.input.getMovementState();
+        let sample_input = this.input.getMovementState();
 
-            let data = {"entity_id":this.entity_id,"movement":movement, "dt": dt, "input_sequence_num":this.input_sequence_number}
+        if(sample_input != false){
+            // the toFixed just rounds the float so it is not huge
+            this.applyInput(sample_input,dt)
+            
+            let data = {"movement":sample_input, "dt": Number(dt.toFixed(4)), "input_sequence_num":this.input_sequence_number}
+            //let data = {"movement":{"horz":1, "vert":0}, "dt": Number(dt.toFixed(4)), "input_sequence_num":this.input_sequence_number}
             this.input_sequence_number += 1;
 
             window.socket.emit("movement", data)
         }
+    }
+
+    applyInput(input,dt){
+        if(this.entity == null){
+            return;
+        }
+
+        let cx = this.entity.getX();
+        let cy = this.entity.getY();
+
+        cx += this.speed * input["horz"] * dt;
+        cy += this.speed * input["vert"] * dt;
+
+        this.entity.setPosition(cx,cy)
     }
 
     update_state(){

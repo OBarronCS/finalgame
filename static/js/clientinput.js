@@ -1,84 +1,76 @@
 export default class ClientInputListener {
 
-    constructor(){
-        this.last_movement;
-        
-        this.movement = {
-          up: false,
-          down: false,
-          left: false,
-          right: false,
-        }
+	constructor() {
+		this.movement_keys = {
+			up: false,
+			down: false,
+			left: false,
+			right: false,
+		}
 
-        this.setKeyboardListeners();
+		this.setKeyboardListeners();
+	}
 
-    }
 	setKeyboardListeners() {
 
-        let movement = this.movement;
+		let movement_keys = this.movement_keys;
 
-        document.addEventListener('keydown', function(event) {
-            switch (event.keyCode) {
-              case 65: // A
-                movement.left = true;
-                break;
-              case 87: // W
-                movement.up = true;
-                break;
-              case 68: // D
-                movement.right = true;
-                break;
-              case 83: // S
-               movement.down = true;
-                break;
-            }
-        });
-
-        document.addEventListener('keyup', function(event) {
-            switch (event.keyCode) {
-              case 65: // A
-                movement.left = false;
-                break;
-              case 87: // W
-                movement.up = false;
-                break;
-              case 68: // D
-                movement.right = false;
-                break;
-              case 83: // S
-                movement.down = false;
-                break;
-            }
-        });
-
-    }
-
-    getMovementState(){
-      return this.movement;
-    }
-
-    //it is assumed that this is called every step
-	has_movement_changed(){
-		for(var key in this.last_movement) {
-        if(this.last_movement[key] != this.movement[key]){
-				return true;
+		document.addEventListener('keydown', function (event) {
+			switch (event.keyCode) {
+				case 65: // A
+					movement_keys.left = true;
+					break;
+				case 87: // W
+					movement_keys.up = true;
+					break;
+				case 68: // D
+					movement_keys.right = true;
+					break;
+				case 83: // S
+					movement_keys.down = true;
+					break;
 			}
-    }
-        
-    for(var key in this.last_movement) {
-      this.last_movement[key] = this.movement[key]
-    }   
+		});
 
-
-		return false;
+		document.addEventListener('keyup', function (event) {
+			switch (event.keyCode) {
+				case 65: // A
+					movement_keys.left = false;
+					break;
+				case 87: // W
+					movement_keys.up = false;
+					break;
+				case 68: // D
+					movement_keys.right = false;
+					break;
+				case 83: // S
+					movement_keys.down = false;
+					break;
+			}
+		});
 	}
-	movement_positive(){
-		//checks if any movement values are positive
-		for(var key in this.movement) {
-			if(this.movement[key] == true){
-				return true;
-			}
+
+	getMovementState() {
+		let horz = 0;
+		let vert = 0;
+
+		if (this.movement_keys.left) {
+			horz -= 1;
 		}
-		return false;
+		if (this.movement_keys.right) {
+			horz += 1;
+		}
+		if (this.movement_keys.up) {
+			vert -= 1;
+		}
+		if (this.movement_keys.down) {
+			vert += 1;
+		}
+
+		if (horz != 0 || vert != 0) {
+			return { "horz": horz, "vert": vert }
+		} else {
+			return false;
+		}
 	}
 }

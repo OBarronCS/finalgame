@@ -6,7 +6,7 @@ import client;
 import entity;
 
 
-import json, random, atexit, time, logging
+import json, atexit, time, logging
 from flask import Flask, render_template, request, jsonify
 
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -15,7 +15,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 app = Flask(__name__);
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app, async_mode='eventlet')
-game = gamelogic.Game(socketio);
+game = gamelogic.Game(socketio, app);
 #Starts the game thread
 
 
@@ -37,41 +37,22 @@ def disconnect():
     game.disconnectPlayer(request.sid);
 
 @socketio.on("join room")
-def joinmatch(data):
+def joinmatch(data):    
+    print("I WOULD LIKE TO JOIN A ROOM PL0X")
     sid = request.sid;
-
-    join_room(1) #connect the player to the main room
-    # added to personal room in case need to send specific data only to them
+    join_room(1) # this doesnt really mean anything yet
     join_room(sid)
 
-    spawn_x = random.randint(50,500);
-    spawn_y = random.randint(50,350);
-
-    # gives new client an unique player_id
-    new_client = client.Client(len(game.clients), sid);
-
-    new_entity = entity.Entity(spawn_x, spawn_y)
-    new_entity.entity_id = new_client.player_id;
-
-    # give client object a reference to the entity they are controlling
-    new_client.entity = new_entity;
-
-    game.entities.append(new_entity)
-    game.clients.append(new_client)
-
-    # makes the session id linked to user id so I can check that no one changed them
-    game.client_authentication.update({sid:new_client.player_id});
-
-    emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState()})
+    game.addNewClient(sid)
 
 @socketio.on("movement")
 def movement(data):
-    game.waiting_inputs.append(data)
+    game.waiting_inputs.append({"sid":request.sid, "data":data});
+    #print("Added to input list")
 
 
+    eventlet.sleep(0);
     #print(data)
-
-    #emit("gamestate",{"playerdata" : this_player.info()})
 
 
 # TESTING
@@ -86,7 +67,8 @@ if __name__ == '__main__':
     #log.setLevel(logging.ERROR)
     game.daemon = True;
     game.start();
-
     socketio.run(app)
+    print(socketio)
+    #socketio.run(app, host="0.0.0.0", port="80")
     
 

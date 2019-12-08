@@ -6,6 +6,7 @@ const step = 1/60;
 
 export default class MatchConnection {
 
+    //data is what was returned from the request to join this game    
     constructor(socket, data){
         this.entities = {};
         this.socket = socket;
@@ -13,37 +14,25 @@ export default class MatchConnection {
         this.client = new ClientObjectController(data, this);
         this.pixiapp = window.pixiapp;
         
-        
-        //Data is what was returned from the request to join this game
         this.setSocketListeners();
         
         this.delta = 0;
- 
-        //window.pixiapp.ticker.add(delta => this.gameLoop(delta))
         
         this.loop_bind = this.gameLoop.bind(this);  
         
         this.steps = 0;
         this.lasttimestamp = 0;
 
-
         requestAnimationFrame(this.loop_bind)
     }
 
     gameLoop(this_timestamp){
+        requestAnimationFrame(this.loop_bind)
         if(this.steps == 0){
             this.lasttimestamp = this_timestamp;
         }
         this.steps++;
-
-
-
-        ///The timestamp passed in to the 
-        //requestAnimationFrame() callback is the
-        //time of the beginning of the animation frame
-        requestAnimationFrame(this.loop_bind)
-
-        // time since last frame in ms, around 16.7 ussually
+        // time since last frame in ms, around .0167 ussually
         this.delta += (this_timestamp - this.lasttimestamp) / 1000;
 
         //console.log(this.delta)
@@ -51,11 +40,12 @@ export default class MatchConnection {
         this.lasttimestamp = this_timestamp;
 
         let stepnum = 0;
+        // glitch: sometimes this runs twice, and thus the same input is sent twice
         while(this.delta >= step){
             //console.log("step")
             // update goes here
             // update LOGIC
-            // Inputs are being sent through client object, might change this
+            // Inputs are being sent through client object, definately change this in a sec
             this.client.processInputs(step);
 
             this.delta -= step;
@@ -65,7 +55,6 @@ export default class MatchConnection {
                 this.snapback();
             }
         }
-        
     }
 
     snapback(){
@@ -95,6 +84,8 @@ export default class MatchConnection {
 
 
         let serverState = serverMessage["state"]
+        console.log(serverState)
+
         for(let i = 0; i < serverState.length; i++){
             ///////////////////////////////////////////////////////
             if(serverState.length > 1){
@@ -121,6 +112,11 @@ export default class MatchConnection {
 
             // if this client is the entity that was sent to them
             if (this.client.entity_id == id){
+                if(entity_state["x"] != this.client.entity.getX()){
+                   // console.log(`Server x: ${entity_state["x"]}`)
+                   // console.log(`Local x: ${this.client.entity.getX()}`)
+                }
+
                 this.client.entity.setPosition(entity_state["x"],entity_state["y"])
                 // Here is where reconciliation should occur
             } else {

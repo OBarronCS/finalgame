@@ -1,7 +1,6 @@
 import MatchConnection from "./matchcontroller.js";
 
 export default class ServerConnection {
-    // Adds the display renderer to the screen
     constructor(){
         this.socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
         this.game = null;

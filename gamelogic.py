@@ -2,12 +2,15 @@
 import eventlet;
 eventlet.monkey_patch();
 
-import entity, client, threading, time;
+import entity, client, threading, time, random;
 
 class Game(threading.Thread):
     # Game loop in here?
-    def __init__(self, socketio):
+    def __init__(self, socketio,app):
         threading.Thread.__init__(self);
+        self.socketio = socketio;
+        self.app = app;
+        self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
         self.waiting_inputs = [];
@@ -18,43 +21,51 @@ class Game(threading.Thread):
         # This one is not in used RN
         self.last_processed_input = [];
 
-        self.socketio = socketio;
-
-        self.client_authentication = {}
+        self.sid_to_client = {}
 
     def processInputs(self):
         # here is where you would want to validate the input first, mate!
         # like make sure dt is not too long, or that it came from the correct user
-
         input_amount = len(self.waiting_inputs);
         i = 0;
+
+        #print(input_amount)
+
         while(i < input_amount):
+            # If the client doesn't exist, just quit
+            sid = self.waiting_inputs[i].get("sid")
 
-            message = self.waiting_inputs[i]
-            player_id = message["entity_id"]
+            #print(sid)
 
-            # this works for now because they increment
-            client = self.clients[player_id];
+            client = self.sid_to_client.get(sid, None)
+            if(client is None):
+                i += 1;
+                continue;
+            
+            message = self.waiting_inputs[i]["data"]
+
             client.entity.applyInput(message);
 
             i += 1;
+            eventlet.sleep(0);
+
         self.waiting_inputs = [];
 
     def disconnectPlayer(self, sid):
         # this is called from the server, basically just kills the entity
-        remove_entity = None;
-        
-        for client in self.clients:
-            if client.sid == sid:
-                if(client.entity is None):
-                    return;
-                remove_entity = client.entity;
-                self.clients.remove(client)
-                break;
+        remove_client = self.sid_to_client.get(sid, None)
+        # this happens most likely when someone connects to server, but never gets to connect to the game;
+        if(remove_client is None):
+            return;
+        remove_entity = remove_client.entity;
+
+        # removes all reference to this player and his entity
+        del self.sid_to_client[sid]
+        self.clients.remove(remove_client);
+        self.entities.remove(remove_entity);
 
         # have to notify people that he has died
         self.entities_to_remove.append(remove_entity.entity_id)
-
 
 
     def sendWorldState(self):
@@ -74,7 +85,8 @@ class Game(threading.Thread):
         self.entities_to_remove = [];
 
         # Broadcast world state to everyone
-        self.socketio.emit("gamestate", game_messages)
+        for client in self.clients:
+            self.socketio.emit("gamestate", game_messages, room = client.sid)
 
     # when the thread is started, this is run
     def run(self):
@@ -82,7 +94,7 @@ class Game(threading.Thread):
         #total time that the game logic has processed
         t = 0;
         #frame rate
-        dt = 1/20;
+        dt = 1/5;
 
         currentTime = time.time()
         accumulator = 0;
@@ -95,13 +107,40 @@ class Game(threading.Thread):
 
             accumulator += frameTime;
 
-            #if the frame time as elapsed do the frame logic bro
-            while (accumulator >= dt):
-                print(dt);
+            #if the frame time as elapsed do the frame logic as many times as needed, then eventually send the world staet once everything has been done;
+            if(accumulator >= dt):
+                while (accumulator >= dt):
+                    #print(accumulator);
 
-                self.processInputs();
+                    self.processInputs();
+                    
+
+                    accumulator -= dt;
+                    t += dt;
+                #print("sent world state")
                 self.sendWorldState();
-
-                accumulator -= dt;
-                t += dt;
             eventlet.sleep(0);
+
+    # connects a new client to this game
+    def addNewClient(self,sid):
+        #random spawn locations
+        spawn_x = random.randint(50,500);
+        spawn_y = random.randint(50,350);
+
+        # gives new client an unique player_id
+        # issues arise at this len(self.clients) !!!!!!!!!!
+        new_client = client.Client(self.entity_id_num, sid);
+        self.entity_id_num += 1;
+
+        new_entity = entity.Entity(spawn_x, spawn_y)
+        new_entity.entity_id = new_client.player_id;
+
+        # give client object a reference to the entity they are controlling
+        new_client.entity = new_entity;
+
+        self.entities.append(new_entity)
+        self.clients.append(new_client)
+        self.sid_to_client.update({sid:new_client});
+
+        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState()}, room = sid)
+    

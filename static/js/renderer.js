@@ -6,6 +6,7 @@ export default class Renderer {
         //Adds it to the DOM
         const displayDiv = document.querySelector('#display')
         displayDiv.appendChild(this.pixiapp.view);
+        console.log("Renderer loaded")
 
         const game_sprites = ["static/images/player.png"];
 
