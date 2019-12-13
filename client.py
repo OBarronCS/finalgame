@@ -6,3 +6,15 @@ class Client:
         self.sid = sid;
         # the entity you are controlling
         self.entity = None;
+
+        self.move = [0,0]
+        
+    def processInput(self, tick):
+        self.entity.applyInput(self.move)
+
+        self.move = [0,0]
+
+    def addInput(self,data):
+        self.move[0] += data["movement"]["horz"];
+        self.move[1] += data["movement"]["vert"];
+

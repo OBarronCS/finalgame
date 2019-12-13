@@ -13,8 +13,7 @@ class Game(threading.Thread):
         self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
-        self.waiting_inputs = [];
-
+        self.dt = 1/5
 
         self.entities_to_remove = [];
 
@@ -23,33 +22,26 @@ class Game(threading.Thread):
 
         self.sid_to_client = {}
 
+    def queueInput(self, data):
+        sid = data.get("sid")
+
+        client = self.sid_to_client.get(sid, None)
+        if(client is None):
+            print("movement linked to no client")
+        
+        client.addInput(data["data"])
+
+
     def processInputs(self):
         # here is where you would want to validate the input first, mate!
         # like make sure dt is not too long, or that it came from the correct user
-        input_amount = len(self.waiting_inputs);
-        i = 0;
 
         #print(input_amount)
+        for client in self.clients:    
+            client.processInput(self.dt)
 
-        while(i < input_amount):
-            # If the client doesn't exist, just quit
-            sid = self.waiting_inputs[i].get("sid")
-
-            #print(sid)
-
-            client = self.sid_to_client.get(sid, None)
-            if(client is None):
-                i += 1;
-                continue;
-            
-            message = self.waiting_inputs[i]["data"]
-
-            client.entity.applyInput(message);
-
-            i += 1;
             eventlet.sleep(0);
 
-        self.waiting_inputs = [];
 
     def disconnectPlayer(self, sid):
         # this is called from the server, basically just kills the entity
@@ -94,7 +86,7 @@ class Game(threading.Thread):
         #total time that the game logic has processed
         t = 0;
         #frame rate
-        dt = 1/5;
+        dt = self.dt;
 
         currentTime = time.time()
         accumulator = 0;

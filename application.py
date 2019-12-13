@@ -47,7 +47,7 @@ def joinmatch(data):
 
 @socketio.on("movement")
 def movement(data):
-    game.waiting_inputs.append({"sid":request.sid, "data":data});
+    game.queueInput({"sid":request.sid, "data":data});
     #print("Added to input list")
 
 

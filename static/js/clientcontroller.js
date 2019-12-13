@@ -47,9 +47,9 @@ export default class ClientObjectController {
 
         if(sample_input != false){
             // the toFixed just rounds the float so it is not huge
-            this.applyInput(sample_input,dt)
+            //this.applyInput(sample_input,dt)
             
-            let data = {"movement":sample_input, "dt": Number(dt.toFixed(4)), "input_sequence_num":this.input_sequence_number}
+            let data = {"movement":sample_input, "input_num":this.input_sequence_number}
             //let data = {"movement":{"horz":1, "vert":0}, "dt": Number(dt.toFixed(4)), "input_sequence_num":this.input_sequence_number}
             this.input_sequence_number += 1;
 
