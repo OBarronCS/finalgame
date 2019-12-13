@@ -8,7 +8,8 @@ export default class Entity {
         this.y = y;
         this.entity_id = entity_id;
         this.sprite = null
-        //currently below is not implemeneted. will be used for dead reckoning
+
+        // holds timestamped coordinate data for this client, held for the past 1 second.
         this.position_buffer = []
     }
 

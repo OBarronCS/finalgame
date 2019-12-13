@@ -13,7 +13,7 @@ class Game(threading.Thread):
         self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
-        self.dt = 1/5
+        self.tickrate = 5
 
         self.entities_to_remove = [];
 
@@ -26,19 +26,16 @@ class Game(threading.Thread):
         sid = data.get("sid")
 
         client = self.sid_to_client.get(sid, None)
-        if(client is None):
+        if client is None:
             print("movement linked to no client")
         
         client.addInput(data["data"])
 
 
     def processInputs(self):
-        # here is where you would want to validate the input first, mate!
-        # like make sure dt is not too long, or that it came from the correct user
 
-        #print(input_amount)
         for client in self.clients:    
-            client.processInput(self.dt)
+            client.processInput(self.tickrate)
 
             eventlet.sleep(0);
 
@@ -46,6 +43,7 @@ class Game(threading.Thread):
     def disconnectPlayer(self, sid):
         # this is called from the server, basically just kills the entity
         remove_client = self.sid_to_client.get(sid, None)
+
         # this happens most likely when someone connects to server, but never gets to connect to the game;
         if(remove_client is None):
             return;
@@ -60,8 +58,10 @@ class Game(threading.Thread):
         self.entities_to_remove.append(remove_entity.entity_id)
 
 
-    def sendWorldState(self):
+    def sendWorldState(self, timestamp):
         #all clients are in room 1
+
+        time_ms = int(timestamp * 1000) # int floors the value
 
         game_messages = {};
         world_state = []
@@ -72,6 +72,7 @@ class Game(threading.Thread):
 
         game_messages.update({"state":world_state})
         game_messages.update({"remove":self.entities_to_remove})
+        game_messages.update({"timestamp":time_ms})
 
         # clears the list of entites to get rid of since last step
         self.entities_to_remove = [];
@@ -86,7 +87,7 @@ class Game(threading.Thread):
         #total time that the game logic has processed
         t = 0;
         #frame rate
-        dt = self.dt;
+        dt = 1/self.tickrate;
 
         currentTime = time.time()
         accumulator = 0;
@@ -110,7 +111,7 @@ class Game(threading.Thread):
                     accumulator -= dt;
                     t += dt;
                 #print("sent world state")
-                self.sendWorldState();
+                self.sendWorldState(newTime);
             eventlet.sleep(0);
 
     # connects a new client to this game
@@ -120,7 +121,6 @@ class Game(threading.Thread):
         spawn_y = random.randint(50,350);
 
         # gives new client an unique player_id
-        # issues arise at this len(self.clients) !!!!!!!!!!
         new_client = client.Client(self.entity_id_num, sid);
         self.entity_id_num += 1;
 
@@ -134,5 +134,5 @@ class Game(threading.Thread):
         self.clients.append(new_client)
         self.sid_to_client.update({sid:new_client});
 
-        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState()}, room = sid)
+        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate}, room = sid)
     

@@ -11,6 +11,9 @@ export default class MatchConnection {
         this.entities = {};
         this.socket = socket;
 
+        // Im doing it the steam way, with everyone being displayed 2 * server_dt in the past. Makes it reliable for server side lag compensation 
+        this.lerp_ms = (1/data["tickrate"] * 1000) * 2
+
         this.client = new ClientObjectController(data, this);
         this.pixiapp = window.pixiapp;
         
@@ -28,23 +31,29 @@ export default class MatchConnection {
 
     gameLoop(this_timestamp){
         requestAnimationFrame(this.loop_bind)
+        
+        let now = Date.now();
+
+        // use this number to calculate interpolation points
+        let target_time = now - this.lerp_ms;
+
+
+        // Calculate interp fraction with ()
+
+
         if(this.steps == 0){
             this.lasttimestamp = this_timestamp;
         }
         this.steps++;
+
         // time since last frame in ms, around .0167 ussually
         this.delta += (this_timestamp - this.lasttimestamp) / 1000;
-
-        //console.log(this.delta)
 
         this.lasttimestamp = this_timestamp;
 
         let stepnum = 0;
         // glitch: sometimes this runs twice, and thus the same input is sent twice
         while(this.delta >= step){
-            //console.log("step")
-            // update goes here
-            // update LOGIC
             // Inputs are being sent through client object, definately change this in a sec
             this.client.processInputs(step);
 
@@ -72,6 +81,8 @@ export default class MatchConnection {
     }
 
     processServerMessage(serverMessage){
+
+        let timestamp = serverMessage["timestamp"]
 
         let removeEntities = serverMessage["remove"]
 
@@ -121,6 +132,8 @@ export default class MatchConnection {
                 // Here is where reconciliation should occur
             } else {
                 //else the current entity is of some other entity then yourself
+                current_entity.position_buffer.push(entity_state)
+
                 current_entity.setPosition(entity_state["x"],entity_state["y"])
 
                 //around here is where you would want to interpolie that stuff

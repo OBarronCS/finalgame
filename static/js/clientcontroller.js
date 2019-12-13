@@ -15,12 +15,13 @@ export default class ClientObjectController {
 
         let new_entity = new Entity(data["state"]["x"], data["state"]["y"],data["player_id"]);
 		new_entity.setSprite("static/images/player.png");
+        
         this.entity = new_entity;
 
 		// Add this entity to the clients list of entities
         match.entities[data["player_id"]] = new_entity;
         
-        this.input_sequence_number = 0;
+        this.input_number = 0;
         this.pending_inputs = [];
         this.speed = 300;
         /* some more commands to know
@@ -49,9 +50,9 @@ export default class ClientObjectController {
             // the toFixed just rounds the float so it is not huge
             //this.applyInput(sample_input,dt)
             
-            let data = {"movement":sample_input, "input_num":this.input_sequence_number}
-            //let data = {"movement":{"horz":1, "vert":0}, "dt": Number(dt.toFixed(4)), "input_sequence_num":this.input_sequence_number}
-            this.input_sequence_number += 1;
+            let data = {"movement":sample_input, "input_num":this.input_number}
+            //let data = {"movement":{"horz":1, "vert":0}, "input_num":this.input_number}
+            this.input_number += 1;
 
             window.socket.emit("movement", data)
         }
