@@ -11,6 +11,7 @@ export default class Entity {
 
         // holds timestamped coordinate data for this client, held for the past 1 second.
         this.state_buffer = []
+        // first index is timestamp, second is info
     }
 
     interpolate(target_time){

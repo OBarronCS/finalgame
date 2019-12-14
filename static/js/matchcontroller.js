@@ -113,8 +113,8 @@ export default class MatchConnection {
 
                 delete this.entities[removeEntities[i]]
 
-                for(let j = 0; j < this.entitylist.length;j++){
-                    if(this.entitylist[j] == removeEntities[i]){
+                for(let j = 0; j < this.entitylist.length; j++){
+                    if(this.entitylist[j].entity_id == removeEntities[i]){
                         this.entitylist.splice(j,1)
                     }
                 }
