@@ -19,7 +19,7 @@ export default class MatchConnection {
         // Im doing it the steam way, 
         //with everyone being displayed 
         //2 * server_dt in the past.  
-        this.lerp_ms = ((1/data["tickrate"]) * 1000) * 2
+        this.lerp_ms = ((1/data["tickrate"]) * 1000) * 4
         console.log(this.lerp_ms)
 
         this.client = new ClientObjectController(data, this);
