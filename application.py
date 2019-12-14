@@ -5,7 +5,7 @@ import gamelogic;
 import client;
 import entity;
 
-import json, atexit, time, logging
+import json, atexit, time, logging, os
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
@@ -57,8 +57,9 @@ if __name__ == '__main__':
     #log = logging.getLogger('werkzeug')
     #log.setLevel(logging.ERROR)
     game.daemon = True;
-    #game.start();
-    socketio.run(app)
-    #socketio.run(app, host="0.0.0.0", port="80")
+    game.start();
+    #socketio.run(app)
+    #port = os.environ.get(,None)
+    socketio.run(app, host="0.0.0.0")
     
 
