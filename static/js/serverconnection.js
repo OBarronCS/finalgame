@@ -2,7 +2,7 @@ import MatchConnection from "./matchcontroller.js";
 
 export default class ServerConnection {
     constructor(){
-        this.socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+        this.socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port, {transports:['websocket']});
         this.game = null;
 
         ///////////////

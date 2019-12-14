@@ -10,10 +10,9 @@ from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__);
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+#app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app, async_mode='eventlet')
 game = gamelogic.Game(socketio, app);
-#Starts the game thread
 
 @app.route("/")
 def index():
@@ -55,7 +54,6 @@ def function(data):
 
 
 if __name__ == '__main__':
-    # use_reloader=False. Debug mode makes the thread start twice
     #log = logging.getLogger('werkzeug')
     #log.setLevel(logging.ERROR)
     game.daemon = True;
