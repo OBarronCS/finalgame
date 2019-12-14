@@ -11,7 +11,9 @@ export default class MatchConnection {
         this.entities = {};
         this.socket = socket;
 
-        // Im doing it the steam way, with everyone being displayed 2 * server_dt in the past. Makes it reliable for server side lag compensation 
+        // Im doing it the steam way, 
+        //with everyone being displayed 
+        //2 * server_dt in the past.  
         this.lerp_ms = (1/data["tickrate"] * 1000) * 2
 
         this.client = new ClientObjectController(data, this);
@@ -25,6 +27,10 @@ export default class MatchConnection {
         
         this.steps = 0;
         this.lasttimestamp = 0;
+
+
+        
+
 
         requestAnimationFrame(this.loop_bind)
     }
