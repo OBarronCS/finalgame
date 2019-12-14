@@ -16,6 +16,7 @@ game = gamelogic.Game(socketio, app);
 
 @app.route("/")
 def index():
+    print("user went to site")
     return render_template("index.html")
 
 @socketio.on("connect")
