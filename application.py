@@ -57,7 +57,7 @@ if __name__ == '__main__':
     #log = logging.getLogger('werkzeug')
     #log.setLevel(logging.ERROR)
     game.daemon = True;
-    #game.start();
+    game.start();
     socketio.run(app)
     #socketio.run(app, host="0.0.0.0", port="80")
     
