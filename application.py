@@ -13,6 +13,9 @@ app = Flask(__name__);
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app, async_mode='eventlet')
 game = gamelogic.Game(socketio, app);
+game.daemon = True;
+game.start();
+
 
 @app.route("/")
 def index():
