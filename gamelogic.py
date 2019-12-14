@@ -134,5 +134,5 @@ class Game(threading.Thread):
         self.clients.append(new_client)
         self.sid_to_client.update({sid:new_client});
 
-        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate}, room = sid)
+        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate, "timestamp":int(time.time() * 1000)}, room = sid)
     

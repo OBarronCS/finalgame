@@ -23,7 +23,12 @@ export default class ClientObjectController {
         match.entities[data["player_id"]] = new_entity;
         
         this.input_number = 0;
-        this.pending_inputs = [];
+
+        // stores all the ones the server has yet to verify with us.
+        // form: [0] = input number [1] is the input itself
+        this.unauthorized_inputs = [];
+
+
         this.speed = 300;
         /* some more commands to know
 		//app.stage.removeChild(anySprite)

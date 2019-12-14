@@ -8,6 +8,8 @@ export default class MatchConnection {
 
     //data is what was returned from the request to join this game    
     constructor(socket, data){
+        
+        this.time_ms = data["timestamp"]
         this.entities = {};
 
         this.entitylist = [];
@@ -43,19 +45,20 @@ export default class MatchConnection {
         }
         this.steps++;
 
-        let now = Date.now();
-
         // target time to be drawing other entities at
         // time since last frame in ms, around .0167 ussually
         this.delta += (this_timestamp - this.lasttimestamp) / 1000;
         this.lasttimestamp = this_timestamp;
 
+
+
         let stepnum = 0;
         // glitch: sometimes this runs twice, and thus the same input is sent twice
         while(this.delta >= step){
             // Inputs are being sent through client object, definately change this in a sec
-            let target_time = now - this.lerp_ms;
-    
+            let target_time = this.time_ms - this.lerp_ms;
+            this.time_ms += step * 1000;
+            
             this.updateEntities(target_time)
             
             this.client.processInputs(step);
@@ -81,6 +84,7 @@ export default class MatchConnection {
             //console.log(data)
             //state data is an array holding dicts of entity info
             let stateData = data["state"]
+            this.time_ms = data["timestamp"]
             
             for(let i = 0; i < stateData.length; i++){
                 let entity_state = stateData[i]

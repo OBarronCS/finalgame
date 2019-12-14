@@ -5,21 +5,15 @@ import gamelogic;
 import client;
 import entity;
 
-
 import json, atexit, time, logging
 from flask import Flask, render_template, request, jsonify
-
 from flask_socketio import SocketIO, emit, join_room, leave_room
-
 
 app = Flask(__name__);
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app, async_mode='eventlet')
 game = gamelogic.Game(socketio, app);
 #Starts the game thread
-
-
-
 
 @app.route("/")
 def index():
@@ -38,7 +32,7 @@ def disconnect():
 
 @socketio.on("join room")
 def joinmatch(data):    
-    print("I WOULD LIKE TO JOIN A ROOM PL0X")
+    print("A player has requested to join the game")
     sid = request.sid;
     join_room(1) # this doesnt really mean anything yet
     join_room(sid)
@@ -53,7 +47,6 @@ def movement(data):
 
     eventlet.sleep(0);
     #print(data)
-
 
 # TESTING
 @socketio.on("ping")
