@@ -22,14 +22,14 @@ export default class ClientObjectController {
 		// Add this entity to the clients list of entities
         match.entities[data["player_id"]] = new_entity;
         
-        this.input_number = 0;
+        
 
         // stores all the ones the server has yet to verify with us.
         // form: [0] = input number [1] is the input itself
         this.unauthorized_inputs = [];
+        this.input_number = 0;
 
-
-        this.speed = 300;
+        this.speed = 150;
         /* some more commands to know
 		//app.stage.removeChild(anySprite)
 		//anySprite.visible = false;
@@ -53,11 +53,9 @@ export default class ClientObjectController {
         let sample_input = this.input.getMovementState();
 
         if(sample_input != false){
-            // the toFixed just rounds the float so it is not huge
             //this.applyInput(sample_input,dt)
             
             let data = {"movement":sample_input, "input_num":this.input_number}
-            //let data = {"movement":{"horz":1, "vert":0}, "input_num":this.input_number}
             this.input_number += 1;
 
             window.socket.emit("movement", data)

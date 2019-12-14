@@ -13,7 +13,7 @@ class Game(threading.Thread):
         self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
-        self.tickrate = 10
+        self.tickrate = 5
 
         self.entities_to_remove = [];
 

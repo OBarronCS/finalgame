@@ -13,8 +13,6 @@ class Entity:
     def applyInput(self,move_data):
 
         # here is where you make sure move_data for each direction is not over (60 * server tickrate) consistently,
-        # or the user is sending too much data
-
-        
+        # or the user is sending too much data  
         self.x += (move_data[0]/60) * self.speed;
         self.y += (move_data[1]/60) * self.speed;

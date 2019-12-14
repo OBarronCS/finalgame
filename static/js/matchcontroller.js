@@ -19,7 +19,8 @@ export default class MatchConnection {
         // Im doing it the steam way, 
         //with everyone being displayed 
         //2 * server_dt in the past.  
-        this.lerp_ms = (1/data["tickrate"] * 1000) * 2
+        this.lerp_ms = ((1/data["tickrate"]) * 1000) * 2
+        console.log(this.lerp_ms)
 
         this.client = new ClientObjectController(data, this);
         this.pixiapp = window.pixiapp;
@@ -50,12 +51,9 @@ export default class MatchConnection {
         this.delta += (this_timestamp - this.lasttimestamp) / 1000;
         this.lasttimestamp = this_timestamp;
 
-
-
         let stepnum = 0;
         // glitch: sometimes this runs twice, and thus the same input is sent twice
-        while(this.delta >= step){
-            // Inputs are being sent through client object, definately change this in a sec
+        if(this.delta >= step){            
             let target_time = this.time_ms - this.lerp_ms;
             this.time_ms += step * 1000;
             

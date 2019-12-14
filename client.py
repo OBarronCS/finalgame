@@ -7,6 +7,8 @@ class Client:
         # the entity you are controlling
         self.entity = None;
 
+        self.last_verified_input = None;
+
         self.move = [0,0]
         
     def processInput(self, tick):
