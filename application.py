@@ -60,8 +60,7 @@ if __name__ == '__main__':
     #log.setLevel(logging.ERROR)
     game.daemon = True;
     game.start();
-    #socketio.run(app)
-    print(socketio)
-    socketio.run(app, host="0.0.0.0", port="80")
+    socketio.run(app)
+    #socketio.run(app, host="0.0.0.0", port="80")
     
 
