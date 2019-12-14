@@ -9,6 +9,9 @@ export default class MatchConnection {
     //data is what was returned from the request to join this game    
     constructor(socket, data){
         this.entities = {};
+
+        this.entitylist = [];
+
         this.socket = socket;
 
         // Im doing it the steam way, 
@@ -28,39 +31,33 @@ export default class MatchConnection {
         this.steps = 0;
         this.lasttimestamp = 0;
 
-
-        
-
+        // holds dicts of states
 
         requestAnimationFrame(this.loop_bind)
     }
 
     gameLoop(this_timestamp){
         requestAnimationFrame(this.loop_bind)
-        
-        let now = Date.now();
-
-        // use this number to calculate interpolation points
-        let target_time = now - this.lerp_ms;
-
-
-        // Calculate interp fraction with ()
-
-
         if(this.steps == 0){
             this.lasttimestamp = this_timestamp;
         }
         this.steps++;
 
+        let now = Date.now();
+
+        // target time to be drawing other entities at
         // time since last frame in ms, around .0167 ussually
         this.delta += (this_timestamp - this.lasttimestamp) / 1000;
-
         this.lasttimestamp = this_timestamp;
 
         let stepnum = 0;
         // glitch: sometimes this runs twice, and thus the same input is sent twice
         while(this.delta >= step){
             // Inputs are being sent through client object, definately change this in a sec
+            let target_time = now - this.lerp_ms;
+    
+            this.updateEntities(target_time)
+            
             this.client.processInputs(step);
 
             this.delta -= step;
@@ -82,69 +79,53 @@ export default class MatchConnection {
     setSocketListeners(){
         this.socket.on("gamestate", data => {
             //console.log(data)
-            this.processServerMessage(data)
+            //state data is an array holding dicts of entity info
+            let stateData = data["state"]
+            
+            for(let i = 0; i < stateData.length; i++){
+                let entity_state = stateData[i]
+                let id = entity_state["entity_id"];
+
+                // immediately create entity for new objects
+                if( !this.entities[id] ){
+                    let new_entity = new Entity(entity_state["x"],entity_state["y"],id);
+                    new_entity.setSprite("static/images/player.png")
+    
+                    this.entities[id] = new_entity;
+                    this.entitylist.push(new_entity)
+                }
+
+                let current_entity = this.entities[id]
+ 
+                if (this.client.entity_id == id){
+                    this.client.entity.setPosition(entity_state["x"],entity_state["y"])
+                } else {
+                    current_entity.state_buffer.push([data["timestamp"],entity_state])
+                }
+            }
+
+            //immediately removes entities that have disconnected
+            let removeEntities = data["remove"]
+
+            for(let i = 0; i < removeEntities.length; i++){
+                console.log("deleted a player")
+                this.entities[removeEntities[i]].deleteSprite();
+
+                delete this.entities[removeEntities[i]]
+
+                for(let j = 0; j < this.entitylist.length;j++){
+                    if(this.entitylist[j] == removeEntities[i]){
+                        this.entitylist.splice(j,1)
+                    }
+                }
+            }
         });
     }
 
-    processServerMessage(serverMessage){
-
-        let timestamp = serverMessage["timestamp"]
-
-        let removeEntities = serverMessage["remove"]
-
-        for(let i = 0; i < removeEntities.length; i++){
-            console.log("deleted a player")
-            this.entities[removeEntities[i]].deleteSprite();
-
-            delete this.entities[removeEntities[i]]
-        }
-
-
-        let serverState = serverMessage["state"]
-        console.log(serverState)
-
-        for(let i = 0; i < serverState.length; i++){
-            ///////////////////////////////////////////////////////
-            if(serverState.length > 1){
-                //console.log(serverState.length)
-            }
-
-
-            let entity_state = serverState[i]
-            let id = entity_state["entity_id"];
-
-            //if this client doesnt have this entity in its list of entites, create one for it,
-            if( !this.entities[id] ){
-                //later, when have time, make this into a seperate script
-
-                let new_entity = new Entity(entity_state["x"],entity_state["y"],id);
-                new_entity.setSprite("static/images/player.png")
-
-
-                this.entities[id] = new_entity;
-            }
-
-            // get reference to local entity with the id of the one sent with info
-            let current_entity = this.entities[id]
-
-            // if this client is the entity that was sent to them
-            if (this.client.entity_id == id){
-                if(entity_state["x"] != this.client.entity.getX()){
-                   // console.log(`Server x: ${entity_state["x"]}`)
-                   // console.log(`Local x: ${this.client.entity.getX()}`)
-                }
-
-                this.client.entity.setPosition(entity_state["x"],entity_state["y"])
-                // Here is where reconciliation should occur
-            } else {
-                //else the current entity is of some other entity then yourself
-                current_entity.position_buffer.push(entity_state)
-
-                current_entity.setPosition(entity_state["x"],entity_state["y"])
-
-                //around here is where you would want to interpolie that stuff
-            }
-
+    updateEntities(target_time){
+        for(let i = 0; i < this.entitylist.length; i++){
+            //entitylist does not include us.
+            this.entitylist[i].interpolate(target_time);
         }
     }
 }

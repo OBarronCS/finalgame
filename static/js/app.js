@@ -4,13 +4,14 @@ import Renderer from "./renderer.js";
 
 const renderer = new Renderer(700,400);
 
-document.addEventListener("DOMContentLoaded", () => {
+PIXI.Loader.shared.load(() => {
+    console.log("Sprites loaded");
+
     console.log("Initiating Connection")
     //Set this global so other things can access it.
     window.pixiapp = renderer.getPixiApp();
 
     const server = new ServerConnection();
     server.joinGame();
+
 });
-
-

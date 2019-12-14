@@ -10,6 +10,7 @@ export default class ClientObjectController {
     constructor(data, match){
         this.input = new ClientInputListener();
         this.match = match;
+        
 
         this.entity_id = data["player_id"];
 

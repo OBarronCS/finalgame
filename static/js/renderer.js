@@ -10,11 +10,8 @@ export default class Renderer {
 
         const game_sprites = ["static/images/player.png"];
 
-        PIXI.loader
+        PIXI.Loader.shared
             .add(game_sprites)
-            .load(() => {
-                console.log("Sprites loaded");
-            });
     }
 
     getPixiApp() {

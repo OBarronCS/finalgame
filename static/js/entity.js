@@ -1,5 +1,5 @@
 const Sprite = PIXI.Sprite;
-const resources = PIXI.loader.resources;
+const resources = PIXI.Loader.shared.resources;
 
 export default class Entity {
 
@@ -10,8 +10,30 @@ export default class Entity {
         this.sprite = null
 
         // holds timestamped coordinate data for this client, held for the past 1 second.
-        this.position_buffer = []
+        this.state_buffer = []
     }
+
+    interpolate(target_time){
+        //if have enough info to interpolate them
+        if(this.state_buffer.length >= 2){
+            while(this.state_buffer.length >= 2 && target_time >= this.state_buffer[1][0]){
+                // removes first index
+                this.state_buffer.shift();
+            }
+            // target time should now be between index 0 and 1
+
+            let fraction = (target_time - this.state_buffer[0][0]) / (this.state_buffer[1][0] - this.state_buffer[0][0])
+            
+            // total changes over the two periods
+            let delta_x = this.state_buffer[1][1]["x"] - this.state_buffer[0][1]["x"];
+            let delta_y = this.state_buffer[1][1]["y"] - this.state_buffer[0][1]["y"];
+
+            this.setPosition(this.state_buffer[0][1]["x"] + (delta_x * fraction),this.state_buffer[0][1]["y"] + (delta_y * fraction));
+        } else {
+            this.setPosition(this.state_buffer[0][1]["x"],this.state_buffer[0][1]["y"])
+        }
+    }
+
 
     deleteSprite(){
         window.pixiapp.stage.removeChild(this.sprite)
@@ -53,10 +75,5 @@ export default class Entity {
     }
     getY(){
         return this.y;
-    }
-
-    // Will apply the given movement
-    applyInput(movement, delta){
-
     }
 }
