@@ -78,6 +78,7 @@ class Game(threading.Thread):
         self.entities_to_remove = [];
 
         # Broadcast world state to everyone
+        print(time_ms)
         for client in self.clients:
             self.socketio.emit("gamestate", game_messages, room = client.sid)
 
