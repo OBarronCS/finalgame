@@ -9,6 +9,7 @@ export default class MatchConnection {
     //data is what was returned from the request to join this game    
     constructor(socket, data){
         
+        // time in ms
         this.time_ms = data["timestamp"]
         this.entities = {};
 
@@ -19,8 +20,11 @@ export default class MatchConnection {
         // Im doing it the steam way, 
         //with everyone being displayed 
         //2 * server_dt in the past.  
-        this.lerp_ms = ((1/data["tickrate"]) * 1000) * 4
+        this.lerp_ms = ((1/data["tickrate"]) * 1000) * 4        
         console.log(this.lerp_ms)
+
+        // USE FOR CLOCK SYNCING
+        this.ticksperupdate = 60 / data["tickrate"];
 
         this.client = new ClientObjectController(data, this);
         this.pixiapp = window.pixiapp;
@@ -33,7 +37,9 @@ export default class MatchConnection {
         
         this.steps = 0;
         this.lasttimestamp = 0;
+        this.test = 0;
 
+        this.clock_delta = []
         // holds dicts of states
 
         requestAnimationFrame(this.loop_bind)
@@ -47,15 +53,45 @@ export default class MatchConnection {
         this.steps++;
 
         // target time to be drawing other entities at
-        // time since last frame in ms, around .0167 ussually
-        this.delta += (this_timestamp - this.lasttimestamp) / 1000;
-        this.lasttimestamp = this_timestamp;
+        // time since last frame in ms
+        let dt_ms = (this_timestamp - this.lasttimestamp)
+
+        this.delta += dt_ms / 1000;
+
+        //Clock syncing
+        //holds last 40 packet delta, discards older ones
+        while(this.clock_delta.length > 20){
+            this.clock_delta.shift();
+        }
+
+        let sum = 0;
+        let amount = this.clock_delta.length
+
+        for(let i = 0; i < amount; i++){
+            sum += this.clock_delta[i];
+        }
+
+        let average_delta = sum / (amount + 1)
+
+        let delta_per_step = average_delta / this.ticksperupdate;
+
+        //console.log(average_delta)
+
+        //max amount of change is 10%
+        let maxtween = dt_ms * .1;
+
+        let compensation = -Math.sign(average_delta) * Math.min(maxtween, Math.abs(delta_per_step))
+        console.log(delta_per_step)
+
+
+        this.time_ms += dt_ms + compensation;
+
+
 
         let stepnum = 0;
-        // glitch: sometimes this runs twice, and thus the same input is sent twice
+        // ensures if refresh rate is about 60 that it only runs this often
         if(this.delta >= step){            
             let target_time = this.time_ms - this.lerp_ms;
-            this.time_ms += step * 1000;
             
             this.updateEntities(target_time)
             
@@ -68,6 +104,7 @@ export default class MatchConnection {
                 this.snapback();
             }
         }
+        this.lasttimestamp = this_timestamp;
     }
 
     snapback(){
@@ -82,7 +119,10 @@ export default class MatchConnection {
             //console.log(data)
             //state data is an array holding dicts of entity info
             let stateData = data["state"]
-            this.time_ms = data["timestamp"]
+            this.clock_delta.push(this.time_ms -  data["timestamp"])
+            //console.log(this.time_ms -  data["timestamp"])
+
+            //this.time_ms = data["timestamp"]
             
             for(let i = 0; i < stateData.length; i++){
                 let entity_state = stateData[i]

@@ -57,8 +57,8 @@ def function(data):
 if __name__ == '__main__':
     print("__main__")
     # this only runs when locally testing, mate!
-    socketio.run(app)
-    #port = int(os.environ.get('PORT', 5000))
+    #socketio.run(app)
+    port = int(os.environ.get('PORT', 5000))
     #socketio.run(app, host="0.0.0.0", port=port)
-    
-
+    print("asdvuiasfduyasfduy")
+    socketio.run(app, host="0.0.0.0", port="80")

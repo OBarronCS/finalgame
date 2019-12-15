@@ -13,7 +13,7 @@ class Game(threading.Thread):
         self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
-        self.tickrate = 10
+        self.tickrate = 5
 
         self.entities_to_remove = [];
 
@@ -78,7 +78,7 @@ class Game(threading.Thread):
         self.entities_to_remove = [];
 
         # Broadcast world state to everyone
-        print(time_ms)
+        #print(time_ms)
         for client in self.clients:
             self.socketio.emit("gamestate", game_messages, room = client.sid)
             eventlet.sleep(0)
