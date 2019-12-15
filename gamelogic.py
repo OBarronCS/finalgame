@@ -81,6 +81,7 @@ class Game(threading.Thread):
         print(time_ms)
         for client in self.clients:
             self.socketio.emit("gamestate", game_messages, room = client.sid)
+            eventlet.sleep(0)
 
     # when the thread is started, this is run
     def run(self):
