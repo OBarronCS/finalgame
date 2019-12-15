@@ -12,6 +12,7 @@ export default class MatchConnection {
         // time in ms
         this.time_ms = data["timestamp"]
         this.entities = {};
+        this.last_server_time = data["timestamp"]
 
         this.entitylist = [];
 
@@ -73,16 +74,25 @@ export default class MatchConnection {
 
         let average_delta = sum / (amount + 1)
 
-        let delta_per_step = average_delta / this.ticksperupdate;
 
-        //console.log(average_delta)
+        // If we have converged over 200 ms...., snap back to last server time (mostly happens when browser loses focus)
+        // add the second one to make sure this case doesn't trigger too often (back-to-back-to-back)
+        if(Math.abs(average_delta) > 200 && this.clock_delta.length > 10){
+            //snaps back time to last server time
+            average_delta = 0;
+            this.time_ms = this.last_server_time;
+
+            //clears the data of clock data
+            this.clock_delta = [];
+        }
+
+        let delta_per_step = average_delta / this.ticksperupdate;
 
         //max amount of change is 10%
         let maxtween = dt_ms * .1;
 
         let compensation = -Math.sign(average_delta) * Math.min(maxtween, Math.abs(delta_per_step))
         console.log(delta_per_step)
-
 
         this.time_ms += dt_ms + compensation;
 
@@ -118,6 +128,7 @@ export default class MatchConnection {
         this.socket.on("gamestate", data => {
             //console.log(data)
             //state data is an array holding dicts of entity info
+            this.last_server_time = data["timestamp"];
             let stateData = data["state"]
             this.clock_delta.push(this.time_ms -  data["timestamp"])
             //console.log(this.time_ms -  data["timestamp"])
