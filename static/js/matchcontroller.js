@@ -76,14 +76,14 @@ export default class MatchConnection {
 
 
         // If we have converged over 200 ms...., snap back to last server time (mostly happens when browser loses focus)
-        // add the second one to make sure this case doesn't trigger too often (back-to-back-to-back)
-        if(Math.abs(average_delta) > 200 && this.clock_delta.length > 10){
+       if(Math.abs(average_delta) > 200){
             //snaps back time to last server time
             average_delta = 0;
-            this.time_ms = this.last_server_time;
 
             //clears the data of clock data
             this.clock_delta = [];
+
+            this.time_ms = this.last_server_time;
         }
 
         let delta_per_step = average_delta / this.ticksperupdate;
