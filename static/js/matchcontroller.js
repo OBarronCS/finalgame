@@ -57,7 +57,7 @@ export default class MatchConnection {
         this.delta += dt_ms / 1000;
 
         //make sure our client 'clock' time is not changing by too much different to real time
-        let maxtween = dt_ms * .25;
+        let maxtween = dt_ms * .1;
 
         //the time we want to be at
         this.ideal_time_ms = this.time_ms - this.current_time_offset;
@@ -79,9 +79,6 @@ export default class MatchConnection {
         
         this.time_ms += dt_ms + compensation;
         
-        
-
-
 
         let stepnum = 0;
         // ensures if refresh rate is about 60 that it only runs this often
@@ -141,8 +138,7 @@ export default class MatchConnection {
             // Update the rate that our time increases here
             let median_delta = this.medianClockDelta()
             //console.log(`Current delta: ${this.time_ms - data["timestamp"]}`)
-            console.log("MEDIAN")
-            console.log(median_delta)
+            console.log(`Median delta: ${median_delta}, ${this.clock_delta.length}`)
 
             if(Math.abs(median_delta) > 100){
                 this.clock_delta = [];
@@ -151,12 +147,15 @@ export default class MatchConnection {
             } 
 
             // if my clock is off by 20 ms, update our compensation rate
-            if(Math.abs(median_delta) > 20 && this.clock_delta.length >= 10){        
+            if(Math.abs(median_delta) > 25 && this.clock_delta.length >= 20){        
                 // if we are diverged too far suddenly, just snapped back to last info we had
                 //if this is positive, we are a bit ahead of the clock
                 //if this is negative, we are a bit behind the clock
-                this.current_time_offset = median_delta;
-                this.start_comp = true;
+                if(!this.start_comp){
+                    this.current_time_offset = median_delta;
+                    this.start_comp = true;
+                }
+                
                 
             }
 
