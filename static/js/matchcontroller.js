@@ -8,19 +8,21 @@ export default class MatchConnection {
 
     //data is what was returned from the request to join this game    
     constructor(socket, data){
-        
-        // time in ms
-        this.time_ms = data["timestamp"]
         this.entities = {};
-        this.last_server_time = data["timestamp"]
-
         this.entitylist = [];
 
-        this.socket = socket;
+        this.time_ms = data["timestamp"]
+        this.last_server_time = data["timestamp"]
 
-        // Im doing it the steam way, 
-        //with everyone being displayed 
-        //2 * server_dt in the past.  
+        // use in clock syncing
+        this.ideal_time_ms = data["timestamp"]
+        this.current_time_offset = 0;
+
+        this.socket = socket;
+        
+
+        this.start_comp = false;
+
         this.lerp_ms = ((1/data["tickrate"]) * 1000) * 4        
         console.log(this.lerp_ms)
 
@@ -38,10 +40,8 @@ export default class MatchConnection {
         
         this.steps = 0;
         this.lasttimestamp = 0;
-        this.test = 0;
 
         this.clock_delta = []
-        // holds dicts of states
 
         requestAnimationFrame(this.loop_bind)
     }
@@ -53,48 +53,33 @@ export default class MatchConnection {
         }
         this.steps++;
 
-        // target time to be drawing other entities at
-        // time since last frame in ms
         let dt_ms = (this_timestamp - this.lasttimestamp)
-
         this.delta += dt_ms / 1000;
 
-        //Clock syncing
-        //holds last 40 packet delta, discards older ones
-        while(this.clock_delta.length > 20){
-            this.clock_delta.shift();
+        //make sure our client 'clock' time is not changing by too much different to real time
+        let maxtween = dt_ms * .25;
+
+        //the time we want to be at
+        this.ideal_time_ms = this.time_ms - this.current_time_offset;
+        //console.log( this.current_time_offset)
+
+        let compensation = 0
+        if(this.start_comp){
+            compensation = -Math.sign(this.current_time_offset) * Math.min(maxtween, Math.abs(this.current_time_offset))
+            this.current_time_offset += compensation
+
+            if(this.current_time_offset == 0){
+                this.start_comp = false;
+                console.log("CLEAR")
+                this.clock_delta = [];
+            }
         }
 
-        let sum = 0;
-        let amount = this.clock_delta.length
 
-        for(let i = 0; i < amount; i++){
-            sum += this.clock_delta[i];
-        }
-
-        let average_delta = sum / (amount + 1)
-
-
-        // If we have converged over 200 ms...., snap back to last server time (mostly happens when browser loses focus)
-       if(Math.abs(average_delta) > 200){
-            //snaps back time to last server time
-            average_delta = 0;
-
-            //clears the data of clock data
-            this.clock_delta = [];
-
-            this.time_ms = this.last_server_time;
-        }
-
-        let delta_per_step = average_delta / this.ticksperupdate;
-
-        //max amount of change is 10%
-        let maxtween = dt_ms * .1;
-
-        let compensation = -Math.sign(average_delta) * Math.min(maxtween, Math.abs(delta_per_step))
-        console.log(delta_per_step)
-
+        
         this.time_ms += dt_ms + compensation;
+        
+        
 
 
 
@@ -123,18 +108,59 @@ export default class MatchConnection {
         this.delta = 0;
     }
 
+    medianClockDelta(){
+        // have to copy array in this method!
+
+        while(this.clock_delta.length > 20){
+            this.clock_delta.shift();
+        }
+
+        const array = [...this.clock_delta];
+
+        if(array.length ===0) return 0;
+
+        array.sort(function(a,b){
+          return a-b;
+        });
+      
+        var half = Math.floor(array.length / 2);
+      
+        if (array.length % 2)
+          return array[half];
+      
+        return (array[half - 1] + array[half]) / 2.0;
+      }
 
     setSocketListeners(){
         this.socket.on("gamestate", data => {
-            //console.log(data)
-            //state data is an array holding dicts of entity info
             this.last_server_time = data["timestamp"];
             let stateData = data["state"]
-            this.clock_delta.push(this.time_ms -  data["timestamp"])
-            //console.log(this.time_ms -  data["timestamp"])
 
-            //this.time_ms = data["timestamp"]
-            
+            this.clock_delta.push(this.time_ms - data["timestamp"])
+        
+            // Update the rate that our time increases here
+            let median_delta = this.medianClockDelta()
+            //console.log(`Current delta: ${this.time_ms - data["timestamp"]}`)
+            console.log("MEDIAN")
+            console.log(median_delta)
+
+            if(Math.abs(median_delta) > 100){
+                this.clock_delta = [];
+                this.time_ms = data["timestamp"];
+                this.current_time_offset = 0;
+            } 
+
+            // if my clock is off by 20 ms, update our compensation rate
+            if(Math.abs(median_delta) > 20 && this.clock_delta.length >= 10){        
+                // if we are diverged too far suddenly, just snapped back to last info we had
+                //if this is positive, we are a bit ahead of the clock
+                //if this is negative, we are a bit behind the clock
+                this.current_time_offset = median_delta;
+                this.start_comp = true;
+                
+            }
+
+
             for(let i = 0; i < stateData.length; i++){
                 let entity_state = stateData[i]
                 let id = entity_state["entity_id"];
