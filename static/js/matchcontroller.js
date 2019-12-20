@@ -59,7 +59,7 @@ export default class MatchConnection {
         //make sure our client 'clock' time is not changing by too much different to real time
         let maxtween = dt_ms * .1;
 
-        //the time we want to be at
+        //the time we want to be at, this is not used rn, but maybe later when simplifying code
         this.ideal_time_ms = this.time_ms - this.current_time_offset;
         //console.log( this.current_time_offset)
 
@@ -69,8 +69,10 @@ export default class MatchConnection {
             this.current_time_offset += compensation
 
             if(this.current_time_offset == 0){
+                // this means that our time has now hit the ideal_time_ms basically, and we are synced based on the data we know
+                // in future add a smart_compensation var because at it is, user clock goes back to moving at own pace, which may cause it to diverge again
                 this.start_comp = false;
-                console.log("CLEAR")
+                console.log("At ideal")
                 this.clock_delta = [];
             }
         }
@@ -129,7 +131,11 @@ export default class MatchConnection {
       }
 
     setSocketListeners(){
-        this.socket.on("gamestate", data => {
+        this.socket.on("gamestate", message => {
+
+            let verified_input = message["private"]
+            let data = message["game"]
+
             this.last_server_time = data["timestamp"];
             let stateData = data["state"]
 
@@ -140,23 +146,23 @@ export default class MatchConnection {
             //console.log(`Current delta: ${this.time_ms - data["timestamp"]}`)
             console.log(`Median delta: ${median_delta}, ${this.clock_delta.length}`)
 
+            // if we are diverged too far suddenly, just snapped back to last info we had
+
+            // should replace these magic numbers
+            // if my clock is off by 25 ms, a 40th of a second, update our compensation rate
             if(Math.abs(median_delta) > 100){
+                console.log("Snapped clock")
                 this.clock_delta = [];
                 this.time_ms = data["timestamp"];
                 this.current_time_offset = 0;
-            } 
-
-            // if my clock is off by 20 ms, update our compensation rate
-            if(Math.abs(median_delta) > 25 && this.clock_delta.length >= 20){        
-                // if we are diverged too far suddenly, just snapped back to last info we had
+                this.start_comp = false;
+            } else if(Math.abs(median_delta) > 25 && this.clock_delta.length >= 20){        
                 //if this is positive, we are a bit ahead of the clock
                 //if this is negative, we are a bit behind the clock
                 if(!this.start_comp){
                     this.current_time_offset = median_delta;
                     this.start_comp = true;
                 }
-                
-                
             }
 
 
@@ -176,7 +182,8 @@ export default class MatchConnection {
                 let current_entity = this.entities[id]
  
                 if (this.client.entity_id == id){
-                    this.client.entity.setPosition(entity_state["x"],entity_state["y"])
+                    //if it is us, reconcile our position with client side prediction
+                    this.client.reconcile(entity_state,verified_input)
                 } else {
                     current_entity.state_buffer.push([data["timestamp"],entity_state])
                 }

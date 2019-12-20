@@ -46,6 +46,8 @@ export default class ClientObjectController {
     }
 
     processInputs(dt){
+        console.log(`There are ${this.unauthorized_inputs.length} unauthorized inputs`)
+
         if(this.entity == null){
             return;
         }
@@ -53,16 +55,41 @@ export default class ClientObjectController {
         let sample_input = this.input.getMovementState();
 
         if(sample_input != false){
-            //this.applyInput(sample_input,dt)
-            
+            //Client side prediction here
+            this.unauthorized_inputs.push([this.input_number,sample_input])
+
+            this.applyInput(sample_input)
+
             let data = {"movement":sample_input, "input_num":this.input_number}
             this.input_number += 1;
 
             window.socket.emit("movement", data)
+            
         }
     }
 
-    applyInput(input,dt){
+    //get server state and last authorized input, and from that get our current position
+    reconcile(entity_state, verified_num){
+        // discard all the inputs that have been implicitly verified on the server,
+        // because they are less than or equal to this one (websockets guarentees order)
+        this.entity.setPosition(entity_state["x"],entity_state["y"])
+
+        if(this.unauthorized_inputs.length == 0){
+            return;
+        }
+        
+        while(this.unauthorized_inputs.length > 0 && this.unauthorized_inputs[0][0] <= verified_num){
+            this.unauthorized_inputs.shift()
+        }
+        // go through the unauthorized_inputs and apply them to get a more accurate position
+        let i;
+        for(i = 0; i < this.unauthorized_inputs.length; i++){
+            this.applyInput(this.unauthorized_inputs[i][1]);
+        }
+    }
+
+    //this is client side prediction for movement
+    applyInput(input){
         if(this.entity == null){
             return;
         }
@@ -70,8 +97,8 @@ export default class ClientObjectController {
         let cx = this.entity.getX();
         let cy = this.entity.getY();
 
-        cx += this.speed * input["horz"] * dt;
-        cy += this.speed * input["vert"] * dt;
+        cx += this.speed * (input["horz"]/60)
+        cy += this.speed * (input["vert"]/60)
 
         this.entity.setPosition(cx,cy)
     }

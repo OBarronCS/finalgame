@@ -28,6 +28,7 @@ class Game(threading.Thread):
         client = self.sid_to_client.get(sid, None)
         if client is None:
             print("movement linked to no client")
+            return;
         
         client.addInput(data["data"])
 
@@ -70,6 +71,7 @@ class Game(threading.Thread):
             entity = client.entity;
             world_state.append(entity.getState())
 
+
         game_messages.update({"state":world_state})
         game_messages.update({"remove":self.entities_to_remove})
         game_messages.update({"timestamp":time_ms})
@@ -80,7 +82,7 @@ class Game(threading.Thread):
         # Broadcast world state to everyone
         #print(time_ms)
         for client in self.clients:
-            self.socketio.emit("gamestate", game_messages, room = client.sid)
+            self.socketio.emit("gamestate",{"private":client.last_verified_input, "game":game_messages}, room = client.sid)
             eventlet.sleep(0)
 
     # when the thread is started, this is run

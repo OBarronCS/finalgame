@@ -45,7 +45,7 @@ def joinmatch(data):
 @socketio.on("movement")
 def movement(data):
     game.queueInput({"sid":request.sid, "data":data});
-
+    print(data)
     #print(data)
 
 # TESTING
