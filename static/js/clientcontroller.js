@@ -60,10 +60,10 @@ export default class ClientObjectController {
 
             this.applyInput(sample_input)
 
-            let data = {"movement":sample_input, "input_num":this.input_number}
+            //let data = {"movement":sample_input, "input_num":this.input_number}
             this.input_number += 1;
 
-            window.socket.emit("movement", data)
+            window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number)
             
         }
     }

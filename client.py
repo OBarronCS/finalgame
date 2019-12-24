@@ -18,9 +18,9 @@ class Client:
 
         self.move = [0,0]
 
-    def addInput(self,data):
+    def addInput(self, horz, vert, input_num):
         # currently hackable if user sets horz or vert to something else than -1,0,1
-        self.last_received_input = data["input_num"]
-        self.move[0] += data["movement"]["horz"];
-        self.move[1] += data["movement"]["vert"];
+        self.last_received_input = input_num
+        self.move[0] += horz
+        self.move[1] += vert
 

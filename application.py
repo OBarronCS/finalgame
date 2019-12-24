@@ -42,11 +42,9 @@ def joinmatch(data):
 
     game.addNewClient(sid)
 
-@socketio.on("movement")
-def movement(data):
-    game.queueInput({"sid":request.sid, "data":data});
-    print(data)
-    #print(data)
+@socketio.on("cmd")
+def movement(horz,vert,input_num):
+    game.queueInput(request.sid, horz, vert, input_num);
 
 # TESTING
 @socketio.on("ping")
