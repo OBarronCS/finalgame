@@ -32,7 +32,7 @@ export default class ServerConnection {
 
         ///// TESTING
 
-        this.socket.on("pong", (data) => {
+        this.socket.on("testpong", (data) => {
             console.log(Date.now() - this.time);
         });
     }
@@ -40,7 +40,7 @@ export default class ServerConnection {
     ///TESTING PURPOSES
     ping(){
         this.time = Date.now();
-        this.socket.emit("ping","hi")
+        this.socket.emit("testping","hi")
     }
 
     getSocket(){

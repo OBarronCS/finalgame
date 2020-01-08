@@ -47,9 +47,9 @@ def movement(horz,vert,input_num):
     game.queueInput(request.sid, horz, vert, input_num);
 
 # TESTING
-@socketio.on("ping")
+@socketio.on("testping")
 def function(data):
-    emit("pong","hi")
+    emit("testpong","hi")
 
 
 if __name__ == '__main__':
