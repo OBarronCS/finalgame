@@ -92,8 +92,8 @@ export default class ClientObjectController {
         if(distance > 10){
             this.entity.setPosition(entity_state["x"],entity_state["y"])
             
-            
-            this.this.unauthorized_inputs.shift()
+            this.unauthorized_inputs.shift();
+
 
             let i;
             for(i = 0; i < this.unauthorized_inputs.length; i++){
