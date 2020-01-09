@@ -53,8 +53,9 @@ export default class ClientObjectController {
         //not only process inputs, but interpolate me a bit
           //this code slowly adjusts our position to where we should be
         if(this.adjusting){
-            let maxtween_x = .1 * this.adjust_x;
-            let maxtween_y = .1 * this.adjust_y;
+            console.log("adjust loop")
+            const maxtween_x = .1 * this.adjust_x;
+            const maxtween_y = .1 * this.adjust_y;
 
             let cx = this.entity.getX();
             let cy = this.entity.getY();
@@ -73,6 +74,7 @@ export default class ClientObjectController {
             }
     
             this.entity.setPosition(cx,cy);
+            console.log(this.entity.getPosition())
         }
 
 
@@ -108,6 +110,7 @@ export default class ClientObjectController {
         //if our first one is greater than the num, that means we have already discarded it.. 
         //which happens when we snap back
         if(this.unauthorized_inputs[0][0] > verified_num){
+            console.log("AIUSUGIY ADFIUASGFKu")
             return;
         }
         
@@ -128,7 +131,7 @@ export default class ClientObjectController {
 
         const distance = Math.sqrt(Math.pow(_x - entity_state["x"],2) + (Math.pow(_y - entity_state["y"],2)))
 
-        console.log("Discrepency" + distance)
+        console.log("Discrepency: " + distance)
 
         //if get to far away , , , snap back
         if(distance > 40){
@@ -149,7 +152,7 @@ export default class ClientObjectController {
         if(distance > 10 && !this.adjusting){
             console.log("ADJUSTING")
             this.adjust_x = entity_state["x"] - _x; // how much we need to move to be at our desired location
-            this.adjust_x = entity_state["y"] - _y; //if actualy is greater the current, its pos...
+            this.adjust_y = entity_state["y"] - _y; //if actualy is greater the current, its pos...
             this.adjusting = true;
             // OLD CODE BELOW
             /*
