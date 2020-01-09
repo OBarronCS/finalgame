@@ -23,7 +23,7 @@ export default class MatchConnection {
 
         this.start_comp = false;
 
-        this.lerp_ms = ((1/data["tickrate"]) * 1000) * (1.5)        
+        this.lerp_ms = ((1/data["tickrate"]) * 1000) * (2)        
         console.log(this.lerp_ms)
 
         // USE FOR CLOCK SYNCING

@@ -52,7 +52,7 @@ export default class ClientObjectController {
     processInputs(dt){
         //not only process inputs, but interpolate me a bit
           //this code slowly adjusts our position to where we should be
-          if(this.adjusting){
+        if(this.adjusting){
             let maxtween_x = .1 * this.adjust_x;
             let maxtween_y = .1 * this.adjust_y;
 
@@ -101,8 +101,6 @@ export default class ClientObjectController {
     reconcile(entity_state, verified_num){
         // discard all the inputs that have been implicitly verified on the server,
         // because they are less than or equal to this one (websockets guarentees order
-
-
         if(this.unauthorized_inputs.length == 0){
             return;
         }
