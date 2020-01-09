@@ -81,10 +81,18 @@ export default class ClientObjectController {
         // go through the unauthorized_inputs and apply them to get a more accurate position
         // only if we are a substantial distance from the server state
 
+        // at this point, 0 index should = the last unnauthored input
+
+        if(this.unauthorized_inputs.length == 0){
+            return;
+        }
+
         const distance = Math.sqrt((Math.pow(this.unauthorized_inputs[0][2] - entity_state["x"],2) + (Math.pow(this.unauthorized_inputs[0][3] - entity_state["y"],2))))
 
         if(distance > 10){
             this.entity.setPosition(entity_state["x"],entity_state["y"])
+            
+            
             this.this.unauthorized_inputs.shift()
 
             let i;
