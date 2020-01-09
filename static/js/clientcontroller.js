@@ -70,7 +70,7 @@ export default class ClientObjectController {
             cx += comp_x;
             cy += comp_y;
 
-            if(Math.abs(this.adjust_x) > .01 && Math.abs(this.adjust_y) > .01){
+            if(Math.abs(this.adjust_x) < .01 && Math.abs(this.adjust_y) < .01){
                 this.adjusting = false;
             }
     
