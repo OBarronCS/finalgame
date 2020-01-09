@@ -67,8 +67,8 @@ export default class ClientObjectController {
             this.adjust_x += comp_x;
             this.adjust_y += comp_y;
 
-            cx += this.comp_x;
-            cy += this.comp_y;
+            cx += comp_x;
+            cy += comp_y;
 
             if(this.adjust_x == 0 && this.adjust_y == 0){
                 this.adjusting = false;
@@ -153,7 +153,7 @@ export default class ClientObjectController {
         if(distance > 10 && !this.adjusting){
             console.log("ADJUSTING")
 
-            // these nums tell us how much ahead we are 
+            // these nums tell us how much ahead we are on each axis 
             this.adjust_x = _x - entity_state["x"]; // how much we need to move to be at our desired location
             this.adjust_y = _y - entity_state["y"];
             this.adjusting = true;
