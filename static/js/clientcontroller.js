@@ -152,8 +152,10 @@ export default class ClientObjectController {
 
         if(distance > 10 && !this.adjusting){
             console.log("ADJUSTING")
-            this.adjust_x = entity_state["x"] - _x; // how much we need to move to be at our desired location
-            this.adjust_y = entity_state["y"] - _y; //if actualy is greater the current, its pos...
+
+            // these nums tell us how much ahead we are 
+            this.adjust_x = _x - entity_state["x"]; // how much we need to move to be at our desired location
+            this.adjust_y = _y - entity_state["y"];
             this.adjusting = true;
             // OLD CODE BELOW
             /*
