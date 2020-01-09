@@ -144,7 +144,7 @@ export default class MatchConnection {
             // Update the rate that our time increases here
             let median_delta = this.medianClockDelta()
             //console.log(`Current delta: ${this.time_ms - data["timestamp"]}`)
-            console.log(`Median delta: ${median_delta}, ${this.clock_delta.length}`)
+            //console.log(`Median delta: ${median_delta}, ${this.clock_delta.length}`)
 
             // if we are diverged too far suddenly, just snapped back to last info we had
 
