@@ -29,7 +29,7 @@ export default class ClientObjectController {
         this.unauthorized_inputs = [];
         this.input_number = 0;
 
-        this.speed = 100;
+        this.speed = 50;
         /* some more commands to know
 		//app.stage.removeChild(anySprite)
 		//anySprite.visible = false;

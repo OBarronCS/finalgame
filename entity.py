@@ -4,7 +4,7 @@ class Entity:
         self.y = y;
         self.position_buffer = [];
         self.entity_id = None;
-        self.speed = 100; # pixels per second
+        self.speed = 50; # pixels per second
 
     def getState(self):
         # rounds position -> int(round(x), to make the packet smaller
