@@ -83,7 +83,7 @@ export default class MatchConnection {
         
 
         let stepnum = 0;
-        // ensures if refresh rate is about 60 that it only runs this often
+        // ensures if refresh rate is above 60 that it only runs this often
         if(this.delta >= step){            
             let target_time = this.time_ms - this.lerp_ms;
             
