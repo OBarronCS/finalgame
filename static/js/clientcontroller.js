@@ -60,11 +60,12 @@ export default class ClientObjectController {
             let cx = this.entity.getX();
             let cy = this.entity.getY();
     
-            let comp_x = Math.sign(this.adjust_x) * Math.min(Math.abs(maxtween_x), Math.abs(this.adjust_x))
-            let comp_y = Math.sign(this.adjust_y) * Math.min(Math.abs(maxtween_y), Math.abs(this.adjust_y))
+            //how much we should move our charaacter in each axis to get to a ideal location points
+            let comp_x = -Math.sign(this.adjust_x) * Math.min(Math.abs(maxtween_x), Math.abs(this.adjust_x))
+            let comp_y = -Math.sign(this.adjust_y) * Math.min(Math.abs(maxtween_y), Math.abs(this.adjust_y))
            
-            this.adjust_x -= comp_x;
-            this.adjust_y -= comp_y;
+            this.adjust_x += comp_x;
+            this.adjust_y += comp_y;
 
             cx += this.comp_x;
             cy += this.comp_y;
