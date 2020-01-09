@@ -124,7 +124,7 @@ class Game(threading.Thread):
         spawn_y = random.randint(50,350);
 
         # gives new client an unique player_id
-        new_client = client.Client(self.entity_id_num, sid);
+        new_client = client.Client(60 / self.tickrate , self.entity_id_num, sid);
         self.entity_id_num += 1;
 
         new_entity = entity.Entity(spawn_x, spawn_y)

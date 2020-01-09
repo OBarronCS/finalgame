@@ -29,7 +29,7 @@ export default class ClientObjectController {
         this.unauthorized_inputs = [];
         this.input_number = 0;
 
-        this.speed = 150;
+        this.speed = 100;
         /* some more commands to know
 		//app.stage.removeChild(anySprite)
 		//anySprite.visible = false;
@@ -56,11 +56,10 @@ export default class ClientObjectController {
 
         if(sample_input != false){
             //Client side prediction here
-            this.unauthorized_inputs.push([this.input_number,sample_input])
-
             this.applyInput(sample_input)
 
-            //let data = {"movement":sample_input, "input_num":this.input_number}
+            this.unauthorized_inputs.push([this.input_number,sample_input, this.entity.getX(), this.entity.getY()])
+          
             this.input_number += 1;
 
             window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number)
@@ -72,19 +71,26 @@ export default class ClientObjectController {
     reconcile(entity_state, verified_num){
         // discard all the inputs that have been implicitly verified on the server,
         // because they are less than or equal to this one (websockets guarentees order)
-        this.entity.setPosition(entity_state["x"],entity_state["y"])
-
         if(this.unauthorized_inputs.length == 0){
             return;
         }
         
-        while(this.unauthorized_inputs.length > 0 && this.unauthorized_inputs[0][0] <= verified_num){
+        while(this.unauthorized_inputs.length > 0 && this.unauthorized_inputs[0][0] < verified_num){
             this.unauthorized_inputs.shift()
         }
         // go through the unauthorized_inputs and apply them to get a more accurate position
-        let i;
-        for(i = 0; i < this.unauthorized_inputs.length; i++){
-            this.applyInput(this.unauthorized_inputs[i][1]);
+        // only if we are a substantial distance from the server state
+
+        const distance = Math.sqrt((Math.pow(this.unauthorized_inputs[0][2] - entity_state["x"],2) + (Math.pow(this.unauthorized_inputs[0][3] - entity_state["y"],2))))
+
+        if(distance > 10){
+            this.entity.setPosition(entity_state["x"],entity_state["y"])
+            this.this.unauthorized_inputs.shift()
+
+            let i;
+            for(i = 0; i < this.unauthorized_inputs.length; i++){
+                this.applyInput(this.unauthorized_inputs[i][1]);
+            }
         }
     }
 
