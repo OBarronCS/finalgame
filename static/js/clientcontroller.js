@@ -51,6 +51,30 @@ export default class ClientObjectController {
 
     processInputs(dt){
         //not only process inputs, but interpolate me a bit
+          //this code slowly adjusts our position to where we should be
+          if(this.adjusting){
+            let maxtween_x = .1 * this.adjust_x;
+            let maxtween_y = .1 * this.adjust_y;
+
+            let cx = this.entity.getX();
+            let cy = this.entity.getY();
+    
+            let comp_x = Math.sign(this.adjust_x) * Math.min(Math.abs(maxtween_x), Math.abs(this.adjust_x))
+            let comp_y = Math.sign(this.adjust_y) * Math.min(Math.abs(maxtween_y), Math.abs(this.adjust_y))
+           
+            this.adjust_x -= comp_x;
+            this.adjust_y -= comp_y;
+
+            cx += this.comp_x;
+            cy += this.comp_y;
+
+            if(this.adjust_x == 0 && this.adjust_y == 0){
+                this.adjusting = false;
+            }
+    
+            this.entity.setPosition(cx,cy);
+        }
+
 
         console.log(`There are ${this.unauthorized_inputs.length} unauthorized inputs`)
 
@@ -76,29 +100,7 @@ export default class ClientObjectController {
     //get server state and last authorized input, and from that get our current position
     reconcile(entity_state, verified_num){
         // discard all the inputs that have been implicitly verified on the server,
-        // because they are less than or equal to this one (websockets guarentees order)
-        if(this.adjusting){
-            let maxtween_x = .1 * this.adjust_x;
-            let maxtween_y = .1 * this.adjust_y;
-
-            let cx = this.entity.getX();
-            let cy = this.entity.getY();
-    
-            let comp_x = Math.sign(this.adjust_x) * Math.min(Math.abs(maxtween_x), Math.abs(this.adjust_x))
-            let comp_y = Math.sign(this.adjust_y) * Math.min(Math.abs(maxtween_y), Math.abs(this.adjust_y))
-           
-            this.adjust_x -= comp_x;
-            this.adjust_y -= comp_y;
-
-            cx += this.comp_x;
-            cy += this.comp_y;
-
-            if(this.adjust_x == 0 && this.adjust_y == 0){
-                this.adjusting = false;
-            }
-    
-            this.entity.setPosition(cx,cy);
-        }
+        // because they are less than or equal to this one (websockets guarentees order
 
 
         if(this.unauthorized_inputs.length == 0){
