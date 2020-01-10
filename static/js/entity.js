@@ -39,10 +39,15 @@ export default class Entity {
             const angle0 = this.state_buffer[0][1]["angle"]
             const angle1 = this.state_buffer[1][1]["angle"]
 
-            const angledif = (angle0 - angle1 + 540) % 360 - 180;
+            let angledif = (angle1 - (angle0) + 540) % 360 - 180;
 
             this.setPosition(this.state_buffer[0][1]["x"] + (delta_x * fraction),this.state_buffer[0][1]["y"] + (delta_y * fraction));
+            
+            let a = this.getAngle();
+            
             this.setAngleDegrees(angle0 + (angledif * fraction))
+
+            console.log(this.getAngle() - a)
             
         } else {
             this.setPosition(this.state_buffer[0][1]["x"],this.state_buffer[0][1]["y"])

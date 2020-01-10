@@ -6,6 +6,7 @@ class Client:
         self.maxInputs = maxInputs;
         self.player_id = player_id;
 
+       
         # unique socket session ID of this user
         self.sid = sid;
         # the entity you are controlling
@@ -16,9 +17,17 @@ class Client:
 
         self.move = [0,0]
         self.next_move = [0,0]
+        
+         # TODO_ --> Auto sync with client on connection
+         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.max_angle_turn = 2.5 * (60/20)
         self.angle_change = 0
+
+        self.next_angle_change = 0;
         
     def processInput(self, tick):
+
+       
         self.move[0] += self.next_move[0];
         self.move[1] += self.next_move[1];
         
@@ -27,6 +36,19 @@ class Client:
         
         # checks for the overflow amount of inputs
         # max amount of inputs is defined as  !!!!!  60 /  game.tickrate    !!!!
+
+        # this might be bad
+
+        self.angle_change += self.next_angle_change;
+        self.next_angle_change = 0
+        angle_sign = copysign(1,self.next_angle_change)
+        angle_overFlow = abs(self.angle_change) - self.max_angle_turn
+        
+        if angle_overFlow > 0:
+            print("ANGLE OVERFLOW")
+            self.angle_change -= (angle_sign * angle_overFlow); 
+            self.next_angle_change += (angle_sign * angle_overFlow);
+
 
         i = 0;
         while(i < 2):

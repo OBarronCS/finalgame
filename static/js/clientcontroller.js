@@ -127,7 +127,7 @@ export default class ClientObjectController {
 
 
         this.entity.turnByDegrees(angle_delta)
-        console.log(this.entity.getAngle())
+        //console.log(this.entity.getAngle())
         ///// ----------- DRAWING THE AIM RECTANGL
 
         //distance from player to mouse
