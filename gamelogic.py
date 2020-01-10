@@ -22,14 +22,14 @@ class Game(threading.Thread):
 
         self.sid_to_client = {}
 
-    def queueInput(self, sid, horz, vert, input_num):
+    def queueInput(self, sid, horz, vert, input_num, angle_delta):
 
         client = self.sid_to_client.get(sid, None)
         if client is None:
             print("movement linked to no client")
             return;
         
-        client.addInput(horz, vert, input_num)
+        client.addInput(horz, vert, input_num, angle_delta)
 
 
     def processInputs(self):

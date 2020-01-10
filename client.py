@@ -16,6 +16,7 @@ class Client:
 
         self.move = [0,0]
         self.next_move = [0,0]
+        self.angle_change = 0
         
     def processInput(self, tick):
         self.move[0] += self.next_move[0];
@@ -46,14 +47,17 @@ class Client:
 
 
         # print(f"{self.move[0],self.move[1]} | Overflow --> {self.next_move[0]},{self.next_move[1]}")
-        self.entity.applyInput(self.move)
+        self.entity.applyInput(self.move, self.angle_change)
         self.last_verified_input = self.last_received_input;
 
+        self.angle_change = 0;
         self.move = [0,0]
 
-    def addInput(self, horz, vert, input_num):
+    def addInput(self, horz, vert, input_num, angle_delta):
         # currently hackable if user sets horz or vert to something else than -1,0,1
         self.last_received_input = input_num
         self.move[0] += horz
         self.move[1] += vert
+        self.angle_change += angle_delta;
+
 

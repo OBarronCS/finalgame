@@ -19,6 +19,8 @@ export default class Entity {
         //if have enough info to interpolate them
         //console.log(this.state_buffer.length)
 
+
+
         if(this.state_buffer.length >= 2){
             while(this.state_buffer.length > 2 && target_time >= this.state_buffer[1][0]){
                 // removes first index
@@ -34,7 +36,14 @@ export default class Entity {
             let delta_x = this.state_buffer[1][1]["x"] - this.state_buffer[0][1]["x"];
             let delta_y = this.state_buffer[1][1]["y"] - this.state_buffer[0][1]["y"];
 
+            const angle0 = this.state_buffer[0][1]["angle"]
+            const angle1 = this.state_buffer[1][1]["angle"]
+
+            const angledif = (angle0 - angle1 + 540) % 360 - 180;
+
             this.setPosition(this.state_buffer[0][1]["x"] + (delta_x * fraction),this.state_buffer[0][1]["y"] + (delta_y * fraction));
+            this.setAngleDegrees(angle0 + (angledif * fraction))
+            
         } else {
             this.setPosition(this.state_buffer[0][1]["x"],this.state_buffer[0][1]["y"])
         }

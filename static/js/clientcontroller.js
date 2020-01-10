@@ -125,6 +125,7 @@ export default class ClientObjectController {
         
         angle_delta *= -Math.sign(angledif);
 
+
         this.entity.turnByDegrees(angle_delta)
         console.log(this.entity.getAngle())
         ///// ----------- DRAWING THE AIM RECTANGL
@@ -180,15 +181,24 @@ export default class ClientObjectController {
 
         let sample_input = this.input.getMovementState();
 
-        if(sample_input != false){
+        if(angle_delta == -0){
+            angle_delta = 0;
+        }
+
+        if(sample_input != false || angle_delta != 0){
             //Client side prediction here
+            if(sample_input == false){
+                sample_input = { "horz": 0, "vert": 0 }
+            }
+
+
             this.applyInput(sample_input)
 
             this.unauthorized_inputs.push([this.input_number,sample_input, this.entity.getX(), this.entity.getY()])
           
             this.input_number += 1;
 
-            window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number)
+            window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number, angle_delta)
             
         }
     }
