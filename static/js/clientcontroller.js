@@ -78,6 +78,16 @@ export default class ClientObjectController {
             console.log(this.entity.getPosition())
         }
 
+        const mousepoint = this.input.getMousePoint();
+
+        //radians, as that is .rotation in pixi.js
+        let angle = Math.atan2(window.mouse.x - this.entity.getX(),- window.mouse.y + this.entity.getY());
+        
+        angle -= Math.PI / 2
+
+        this.entity.setAngleRadians(angle)
+
+
 
         //console.log(`There are ${this.unauthorized_inputs.length} unauthorized inputs`)
 
@@ -118,9 +128,6 @@ export default class ClientObjectController {
         while(this.unauthorized_inputs.length > 0 && this.unauthorized_inputs[0][0] < verified_num){
             this.unauthorized_inputs.shift()
         }
-        // go through the unauthorized_inputs and apply them to get a more accurate position
-        // only if we are a substantial distance from the server state
-
         // at this point, 0 index should = the verified_num
 
         if(this.unauthorized_inputs.length == 0){
@@ -148,9 +155,7 @@ export default class ClientObjectController {
             this.adjust_y = 0;
 
             return;
-        }
-
-        if(distance > 10 && !this.adjusting){
+        } else if(distance > 10 && !this.adjusting){
             console.log("ADJUSTING")
 
             // these nums tell us how much ahead we are on each axis 

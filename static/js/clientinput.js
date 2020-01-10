@@ -73,4 +73,9 @@ export default class ClientInputListener {
 			return false;
 		}
 	}
+
+	// returns dict {x:_ , y:} of the location of mouse pointer. Absolute value
+	getMousePoint(){
+		return window.mouse;
+	}
 }

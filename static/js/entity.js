@@ -8,6 +8,7 @@ export default class Entity {
         this.y = y;
         this.entity_id = entity_id;
         this.sprite = null
+        this.angle = 0;
 
         // holds timestamped coordinate data for this client, held for the past 1 second.
         this.state_buffer = []
@@ -39,6 +40,10 @@ export default class Entity {
         }
     }
 
+    setAngleRadians(angle){
+
+        this.sprite.rotation = angle
+    }
 
     deleteSprite(){
         window.pixiapp.stage.removeChild(this.sprite)

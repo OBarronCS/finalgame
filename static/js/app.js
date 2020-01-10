@@ -10,6 +10,8 @@ PIXI.Loader.shared.load(() => {
     console.log("Initiating Connection")
     //Set this global so other things can access it.
     window.pixiapp = renderer.getPixiApp();
+    window.mouse = window.pixiapp.renderer.plugins.interaction.mouse.global
+
 
     const server = new ServerConnection();
     server.joinGame();
