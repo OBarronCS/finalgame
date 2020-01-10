@@ -17,15 +17,27 @@ export default class ClientObjectController {
         pixiapp.stage.addChild(this.graphics);
 
         //0, 0 in reference to this object
+        /*
         this.graphics.drawRect(0, 0, 12, 12);
         // MAKE SURE THESE ARE HALF OF WIDTH SO MOUSE STAYS IN MIDDLE
         this.graphics.pivot.x = 6
         this.graphics.pivot.y = 6
+        */
         //graphics.beginFill(color hex code);
-                
 
+        //LINES
+        this.posline = new PIXI.Graphics();
+        this.posline.lineStyle(1, 0xFFFFFF);
+        this.posline.alpha = .2
+        this.posline.lineTo(250, 0);
+        pixiapp.stage.addChild(this.posline);
+        
 
-
+        this.negline = new PIXI.Graphics();
+        this.negline.lineStyle(1, 0xFFFFFF);
+        this.negline.alpha = .2
+        this.negline.lineTo(250, 0);
+        pixiapp.stage.addChild(this.negline);
 
         this.entity_id = data["player_id"];
 
@@ -39,7 +51,10 @@ export default class ClientObjectController {
         
         
         //max degrees per step can turn
-        this.max_angle_turn = 5
+        this.max_angle_turn = 2
+
+        // amount of degrees each way that I can "see/aim"
+        this.max_angle_view = 20
 
         // stores all the ones the server has yet to verify with us.
         // form: [0] = input number [1] is the input itself
@@ -103,6 +118,7 @@ export default class ClientObjectController {
 
         //mouseangle now = angle to mouse in degrees
 
+        //difference between current angle and angle to mouse
         const angledif = (this.entity.getAngle() - mouseangle + 540) % 360 - 180;
         
         let angle_delta = Math.min(Math.abs(angledif), Math.abs(this.max_angle_turn));
@@ -111,16 +127,36 @@ export default class ClientObjectController {
 
         this.entity.turnByDegrees(angle_delta)
 
-        ///// ----------- DRAWING THE AIM RECTANGLE
-        this.graphics.x = mousepoint.x;
-        this.graphics.y = mousepoint.y;
-        this.graphics.angle = mouseangle
+        ///// ----------- DRAWING THE AIM RECTANGL
+
+        //distance from player to mouse
+        const mouse_dis = Math.sqrt(Math.pow(mousepoint.x - this.entity.x,2) + (Math.pow(mousepoint.y - this.entity.y,2)))
+        
+        //clear completely clears all settings and past draw things with this object
+        this.graphics.clear()
+        this.graphics.lineStyle(2, 0xFF0000);
+        this.graphics.pivot.x = 6
+        this.graphics.pivot.y = 6
+
+        this.graphics.drawRect(mouse_dis, 0, 12, 12);
+        // MAKE SURE THESE ARE HALF OF WIDTH SO MOUSE STAYS IN MIDDLE
+        
+        this.graphics.x = this.entity.x;
+        this.graphics.y = this.entity.y;
+
+        let rect_angle = Math.min(Math.abs(this.max_angle_view), Math.abs(angledif));
+        console.log(rect_angle)
+
+        this.graphics.angle = this.entity.getAngle() + (-Math.sign(angledif) * rect_angle)
 
 
+        this.posline.x = this.entity.x;
+        this.posline.y = this.entity.y
+        this.posline.angle = this.entity.getAngle() + this.max_angle_view;
 
-
-
-
+        this.negline.x = this.entity.x;
+        this.negline.y = this.entity.y
+        this.negline.angle = this.entity.getAngle() - this.max_angle_view;
 
         //console.log(`There are ${this.unauthorized_inputs.length} unauthorized inputs`)
 
