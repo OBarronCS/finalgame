@@ -9,15 +9,15 @@
 
 
     <!-- Importing Game Modules -->
-    <script type="module" src="{{url_for('static',filename='js/clientcontroller.js')}}"></script>
-    <script type="module" src="{{url_for('static',filename='js/clientinput.js')}}"></script>
-    <script type="module" src="{{url_for('static',filename='js/entity.js')}}"></script>
-    <script type="module" src="{{url_for('static',filename='js/matchcontroller.js')}}"></script>
-    <script type="module" src="{{url_for('static',filename='js/renderer.js')}}"></script>
-    <script type="module" src="{{url_for('static',filename='js/serverconnection.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/clientcontroller.js', ver=timestamp)}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/clientinput.js', ver=timestamp )}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/entity.js', ver=timestamp )}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/matchcontroller.js', ver=timestamp)}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/renderer.js', ver=timestamp)}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/serverconnection.js', ver=timestamp)}}"></script>
 
     <!-- Game Starts Running Here -->
-    <script type="module" src="{{url_for('static',filename='js/app.js')}}"></script>
+    <script type="module" src="{{url_for('static',filename='js/app.js', ver=timestamp)}}"></script>
   </head>
   <body>
     Hello, this will be an online game.

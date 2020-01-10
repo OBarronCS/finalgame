@@ -10,7 +10,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__);
-#app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app, async_mode='eventlet')
 game = gamelogic.Game(socketio, app);
 game.daemon = True;
@@ -20,7 +20,9 @@ game.start();
 @app.route("/")
 def index():
     print("user went to site")
-    return render_template("index.html")
+
+    timestamp = int(time.time());
+    return render_template("index.html", timestamp = timestamp)
 
 @socketio.on("connect")
 def connect():

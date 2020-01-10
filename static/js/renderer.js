@@ -1,7 +1,8 @@
 export default class Renderer {
 
     constructor(width, height) {
-        this.pixiapp = new PIXI.Application({ width: width, height: height })
+        this.pixiapp = new PIXI.Application({ width: width, height: height, backgroundColor : 0x4d5c63 })
+
 
         //Adds it to the DOM
         const displayDiv = document.querySelector('#display')
