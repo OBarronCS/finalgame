@@ -11,6 +11,21 @@ export default class ClientObjectController {
         this.input = new ClientInputListener();
         this.match = match;
         
+        ///------- Adds the rectangle showing where you are actually aiming
+        this.graphics = new PIXI.Graphics();
+        this.graphics.lineStyle(2, 0xFF0000);
+        pixiapp.stage.addChild(this.graphics);
+
+        //0, 0 in reference to this object
+        this.graphics.drawRect(0, 0, 12, 12);
+        // MAKE SURE THESE ARE HALF OF WIDTH SO MOUSE STAYS IN MIDDLE
+        this.graphics.pivot.x = 6
+        this.graphics.pivot.y = 6
+        //graphics.beginFill(color hex code);
+                
+
+
+
 
         this.entity_id = data["player_id"];
 
@@ -23,6 +38,8 @@ export default class ClientObjectController {
         match.entities[data["player_id"]] = new_entity;
         
         
+        //max degrees per step can turn
+        this.max_angle_turn = 5
 
         // stores all the ones the server has yet to verify with us.
         // form: [0] = input number [1] is the input itself
@@ -80,12 +97,28 @@ export default class ClientObjectController {
 
         const mousepoint = this.input.getMousePoint();
 
-        //radians, as that is .rotation in pixi.js
-        let angle = Math.atan2(window.mouse.x - this.entity.getX(),- window.mouse.y + this.entity.getY());
-        
-        angle -= Math.PI / 2
+        let mouseangle = Math.atan2(mousepoint.x - this.entity.getX(),- mousepoint.y + this.entity.getY());
+        mouseangle *= (180/Math.PI)
+        mouseangle -= 90
 
-        this.entity.setAngleRadians(angle)
+        //mouseangle now = angle to mouse in degrees
+
+        const angledif = (this.entity.getAngle() - mouseangle + 540) % 360 - 180;
+        
+        let angle_delta = Math.min(Math.abs(angledif), Math.abs(this.max_angle_turn));
+        
+        angle_delta *= -Math.sign(angledif);
+
+        this.entity.turnByDegrees(angle_delta)
+
+        ///// ----------- DRAWING THE AIM RECTANGLE
+        this.graphics.x = mousepoint.x;
+        this.graphics.y = mousepoint.y;
+        this.graphics.angle = mouseangle
+
+
+
+
 
 
 

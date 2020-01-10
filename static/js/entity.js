@@ -40,9 +40,13 @@ export default class Entity {
         }
     }
 
-    setAngleRadians(angle){
+    turnByDegrees(degrees){
+        this.setAngleDegrees(this.angle + degrees)
+    }
 
-        this.sprite.rotation = angle
+    setAngleDegrees(angle){
+        this.angle = angle;
+        this.sprite.angle = angle
     }
 
     deleteSprite(){
@@ -85,5 +89,9 @@ export default class Entity {
     }
     getY(){
         return this.y;
+    }
+
+    getAngle(){
+        return this.angle
     }
 }
