@@ -185,6 +185,11 @@ export default class ClientObjectController {
             angle_delta = 0;
         }
 
+            // happens when renderer breaks. would break server rn becuase not validating inputs
+        if(isNaN(angle_delta)){
+            return;
+        }
+
         if(sample_input != false || angle_delta != 0){
             //Client side prediction here
             if(sample_input == false){
