@@ -2,7 +2,7 @@
 import ServerConnection from "./serverconnection.js";
 import Renderer from "./renderer.js";
 
-const renderer = new Renderer(700,400);
+const renderer = new Renderer(window.innerWidth - 50,window.innerHeight- 50);
 
 PIXI.Loader.shared.load(() => {
     console.log("Sprites loaded");
