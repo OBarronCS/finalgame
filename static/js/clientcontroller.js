@@ -51,7 +51,7 @@ export default class ClientObjectController {
         
         
         //max degrees per step can turn
-        this.max_angle_turn = 2
+        this.max_angle_turn = 2.5
 
         // amount of degrees each way that I can "see/aim"
         this.max_angle_view = 20
@@ -126,7 +126,7 @@ export default class ClientObjectController {
         angle_delta *= -Math.sign(angledif);
 
         this.entity.turnByDegrees(angle_delta)
-
+        console.log(this.entity.getAngle())
         ///// ----------- DRAWING THE AIM RECTANGL
 
         //distance from player to mouse
@@ -145,18 +145,32 @@ export default class ClientObjectController {
         this.graphics.y = this.entity.y;
 
         let rect_angle = Math.min(Math.abs(this.max_angle_view), Math.abs(angledif));
-        console.log(rect_angle)
+        //console.log(rect_angle)
 
         this.graphics.angle = this.entity.getAngle() + (-Math.sign(angledif) * rect_angle)
 
+        this.posline.clear()
+        this.negline.clear()
 
-        this.posline.x = this.entity.x;
-        this.posline.y = this.entity.y
-        this.posline.angle = this.entity.getAngle() + this.max_angle_view;
+        if(this.graphics.angle == this.entity.getAngle() + this.max_angle_view || this.graphics.angle == this.entity.getAngle() - this.max_angle_view){
+            
+            this.posline.lineStyle(1, 0xFFFFFF);
+            this.posline.alpha = .2
+            this.posline.lineTo(250, 0);
+            this.posline.x = this.entity.x;
+            this.posline.y = this.entity.y
+            this.posline.angle = this.entity.getAngle() + this.max_angle_view;
+    
+            this.negline.lineStyle(1, 0xFFFFFF);
+            this.negline.alpha = .2
+            this.negline.lineTo(250, 0);
+            this.negline.x = this.entity.x;
+            this.negline.y = this.entity.y
+            this.negline.angle = this.entity.getAngle() - this.max_angle_view;
+        }
 
-        this.negline.x = this.entity.x;
-        this.negline.y = this.entity.y
-        this.negline.angle = this.entity.getAngle() - this.max_angle_view;
+
+        
 
         //console.log(`There are ${this.unauthorized_inputs.length} unauthorized inputs`)
 
