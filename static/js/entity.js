@@ -18,7 +18,7 @@ export default class Entity {
         //if have enough info to interpolate them
         //console.log(this.state_buffer.length)
 
-        if(this.state_buffer.length > 2){
+        if(this.state_buffer.length >= 2){
             while(this.state_buffer.length > 2 && target_time >= this.state_buffer[1][0]){
                 // removes first index
                 this.state_buffer.shift();

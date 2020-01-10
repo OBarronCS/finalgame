@@ -132,7 +132,7 @@ export default class ClientObjectController {
 
         const distance = Math.sqrt(Math.pow(_x - entity_state["x"],2) + (Math.pow(_y - entity_state["y"],2)))
 
-        console.log("Discrepency: " + distance)
+        //console.log("Discrepency: " + distance)
 
         //if get to far away , , , snap back
         if(distance > 40){
