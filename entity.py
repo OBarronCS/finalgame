@@ -9,7 +9,7 @@ class Entity:
 
     def getState(self):
         # rounds position -> int(round(x), to make the packet smaller
-        return {"entity_id":self.entity_id, "x":int(round(self.x)), "y": int(round(self.y)), "angle":round(self.angle)}
+        return {"e_id":self.entity_id, "x":int(round(self.x)), "y": int(round(self.y)), "a":round(self.angle)}
 
     def applyInput(self,move_data, angle_change):
         self.x += (move_data[0]/60) * self.speed;

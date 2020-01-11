@@ -36,8 +36,8 @@ export default class Entity {
             let delta_x = this.state_buffer[1][1]["x"] - this.state_buffer[0][1]["x"];
             let delta_y = this.state_buffer[1][1]["y"] - this.state_buffer[0][1]["y"];
 
-            const angle0 = this.state_buffer[0][1]["angle"]
-            const angle1 = this.state_buffer[1][1]["angle"]
+            const angle0 = this.state_buffer[0][1]["a"]
+            const angle1 = this.state_buffer[1][1]["a"]
 
             let angledif = (angle1 - (angle0) + 540) % 360 - 180;
 

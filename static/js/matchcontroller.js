@@ -228,7 +228,7 @@ export default class MatchConnection {
 
             for(let i = 0; i < stateData.length; i++){
                 let entity_state = stateData[i]
-                let id = entity_state["entity_id"];
+                let id = entity_state["e_id"];
 
                 // immediately create entity for new objects
                 if( !this.entities[id] ){
