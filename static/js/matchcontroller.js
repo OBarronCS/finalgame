@@ -166,8 +166,8 @@ export default class MatchConnection {
     setSocketListeners(){
         this.socket.on("gamestate", message => {
 
-            let verified_input = message["private"]["v_id"]
-            this.ping = message["private"]["p"] / 2
+            let verified_input = message["pvt"]["v_id"]
+            this.ping = message["pvt"]["p"] / 2
             this.ping_text.text = `Ping: ${this.ping}ms`;
 
             let data = message["game"]
@@ -206,8 +206,23 @@ export default class MatchConnection {
             let events = message["game"]["e"]
 
             for(k = 0; k < events.length; k++){
-                if(events[k][0] == 0){
+                const id = events[k][0];
+
+
+                if(id == 0){
                     new HitScan(this, [ events[k][1], events[k][2] ], events[k][3] )
+                } else if(id == 1){
+                    //immediately removes entities that have disconnected
+                    console.log("deleted a player")
+                    this.entities[events[k][1]].deleteSprite();
+
+                    delete this.entities[events[k][1]]
+
+                    for(let j = 0; j < this.entitylist.length; j++){
+                        if(this.entitylist[j].entity_id == events[k][1]){
+                            this.entitylist.splice(j,1)
+                        }
+                    }  
                 }
             }
 
@@ -231,22 +246,6 @@ export default class MatchConnection {
                     this.client.reconcile(entity_state,verified_input)
                 } else {
                     current_entity.state_buffer.push([data["timestamp"],entity_state])
-                }
-            }
-
-            //immediately removes entities that have disconnected
-            let removeEntities = data["remove"]
-
-            for(let i = 0; i < removeEntities.length; i++){
-                console.log("deleted a player")
-                this.entities[removeEntities[i]].deleteSprite();
-
-                delete this.entities[removeEntities[i]]
-
-                for(let j = 0; j < this.entitylist.length; j++){
-                    if(this.entitylist[j].entity_id == removeEntities[i]){
-                        this.entitylist.splice(j,1)
-                    }
                 }
             }
         });

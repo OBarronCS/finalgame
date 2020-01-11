@@ -15,8 +15,6 @@ class Game(threading.Thread):
         self.entities = [];
         self.tickrate = 20
 
-        self.entities_to_remove = [];
-
         # This one is not in used RN
         self.last_processed_input = [];
 
@@ -58,7 +56,9 @@ class Game(threading.Thread):
         self.entities.remove(remove_entity);
 
         # have to notify people that he has died
-        self.entities_to_remove.append(remove_entity.entity_id)
+
+        self.events.append([1, remove_entity.entity_id])
+
 
 
     def sendWorldState(self, timestamp):
@@ -75,17 +75,15 @@ class Game(threading.Thread):
 
 
         game_messages.update({"state":world_state})
-        game_messages.update({"remove":self.entities_to_remove})
         game_messages.update({"timestamp":time_ms})
         game_messages.update({"e":self.events})
 
         self.events = []
-        self.entities_to_remove = []
 
         # Broadcast world state to everyone
         #print(time_ms)
         for client in self.clients:
-            self.socketio.emit("gamestate",{"private":{"v_id" : client.last_verified_input, "p":client.ping}, "game":game_messages}, room = client.sid)
+            self.socketio.emit("gamestate",{"pvt":{"v_id" : client.last_verified_input, "p":client.ping}, "game":game_messages}, room = client.sid)
             eventlet.sleep(0)
 
     # when the thread is started, this is run
