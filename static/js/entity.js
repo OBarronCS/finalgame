@@ -47,7 +47,7 @@ export default class Entity {
             
             this.setAngleDegrees(angle0 + (angledif * fraction))
 
-            console.log(this.getAngle() - a)
+            //console.log(this.getAngle() - a)
             
         } else {
             this.setPosition(this.state_buffer[0][1]["x"],this.state_buffer[0][1]["y"])
