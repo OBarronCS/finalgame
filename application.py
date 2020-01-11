@@ -59,6 +59,13 @@ def ping_return(data):
 def testping(data):
     emit("testpong","hi")
 
+# error handling
+@socketio.on_error_default
+def default_error_handler(e):
+    print("Error in input!")
+    print(request.event["message"]) # "my error event"
+    print(request.event["args"])    # (data,)
+
 
 if __name__ == '__main__':
     print("__main__")
