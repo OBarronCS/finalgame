@@ -43,10 +43,10 @@ export default class MatchConnection {
 
         this.clock_delta = []
 
-        this.ping_text = new PIXI.Text("Ping: ", {fontFamily : 'Arial', fontSize: 18, fill : 0xff1010, align : 'center'})
+        this.ping_text = new PIXI.Text("Ping: ", {fontFamily : 'Arial', fontSize: 16, fill : 0xff1010, align : 'center'})
 
         this.ping_text.x = 6
-        this.ping_text.y = 12
+        this.ping_text.y = 10
 
         window.pixiapp.stage.addChild(this.ping_text);
 
@@ -146,7 +146,7 @@ export default class MatchConnection {
 
             let verified_input = message["private"]["v_id"]
             this.ping = message["private"]["p"] / 2
-            this.ping_text.text = `Ping: ${this.ping}`;
+            this.ping_text.text = `Ping: ${this.ping}ms`;
 
             let data = message["game"]
 

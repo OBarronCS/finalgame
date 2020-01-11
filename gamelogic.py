@@ -135,7 +135,7 @@ class Game(threading.Thread):
     def send_ping(self,client):
         ping_id = client.next_ping_id
         self.socketio.emit("p", ping_id, room = client.sid)
-        client.sent_pings.update({ping_id:time.time()})
+        client.sent_pings.update({ping_id:time.time()*1000})
 
         client.next_ping_id += 1
         eventlet.sleep(0)
@@ -146,7 +146,7 @@ class Game(threading.Thread):
             print("ping linked to no client")
             return;
 
-        return_time = time.time()
+        return_time = time.time() * 1000
 
         client.calc_ping(pingid, return_time)
 
