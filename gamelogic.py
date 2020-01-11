@@ -26,6 +26,7 @@ class Game(threading.Thread):
 
         client = self.sid_to_client.get(sid, None)
         if client is None:
+            # this is called alot right after someone joins as they have yet to be created in the world
             print("movement linked to no client")
             return;
         
@@ -81,7 +82,7 @@ class Game(threading.Thread):
         # Broadcast world state to everyone
         #print(time_ms)
         for client in self.clients:
-            self.socketio.emit("gamestate",{"private":client.last_verified_input, "game":game_messages}, room = client.sid)
+            self.socketio.emit("gamestate",{"private":{"v_id" : client.last_verified_input, "p":client.ping}, "game":game_messages}, room = client.sid)
             eventlet.sleep(0)
 
     # when the thread is started, this is run
@@ -94,6 +95,7 @@ class Game(threading.Thread):
 
         currentTime = time.time()
         accumulator = 0;
+        ping_accumulator = 0;
 
         while (True):
             #frametime = time that that last frame took
@@ -102,6 +104,19 @@ class Game(threading.Thread):
             currentTime = newTime;
 
             accumulator += frameTime;
+            ping_accumulator += frameTime;
+
+
+            # for now, sending all pings at once... later disperse them over different time periods
+            # every .3 seconds check ping
+            if(ping_accumulator > .3):
+                ping_accumulator = 0;
+                for client in self.clients:
+                    self.send_ping(client)
+                    eventlet.sleep(0)
+
+                
+
 
             #if the frame time as elapsed do the frame logic as many times as needed, then eventually send the world staet once everything has been done;
             if(accumulator >= dt):
@@ -116,6 +131,24 @@ class Game(threading.Thread):
                 #print("sent world state")
                 self.sendWorldState(newTime);
             eventlet.sleep(0);
+
+    def send_ping(self,client):
+        ping_id = client.next_ping_id
+        self.socketio.emit("p", ping_id, room = client.sid)
+        client.sent_pings.update({ping_id:time.time()})
+
+        client.next_ping_id += 1
+        eventlet.sleep(0)
+
+    def ping_return(self, sid, pingid):
+        client = self.sid_to_client.get(sid, None)
+        if client is None:
+            print("ping linked to no client")
+            return;
+
+        return_time = time.time()
+
+        client.calc_ping(pingid, return_time)
 
     # connects a new client to this game
     def addNewClient(self,sid):

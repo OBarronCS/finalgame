@@ -20,6 +20,3 @@ class Entity:
             self.angle -= 360
         if self.angle < 0:
             self.angle += 360
-
-
-        print(self.angle)

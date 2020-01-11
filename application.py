@@ -48,9 +48,15 @@ def joinmatch(data):
 def movement(horz,vert,input_num,angle_delta):
     game.queueInput(request.sid, horz, vert, input_num, angle_delta);
 
+# client returns 
+@socketio.on("p")
+def ping_return(data):
+    game.ping_return(request.sid, data)
+
+
 # TESTING
 @socketio.on("testping")
-def function(data):
+def testping(data):
     emit("testpong","hi")
 
 

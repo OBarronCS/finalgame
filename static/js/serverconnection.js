@@ -29,7 +29,11 @@ export default class ServerConnection {
             this.game = new MatchConnection(this.socket, data);
         })
 
-
+        //Server calls this periodically to get the round trip time
+        this.socket.on("p", (data) => {
+            console.log("P")
+            this.socket.emit("p", data)
+        });
         ///// TESTING
 
         this.socket.on("testpong", (data) => {

@@ -1,4 +1,4 @@
-from math import copysign
+from math import copysign, ceil
 
 class Client:
     def __init__(self, maxInputs, player_id, sid):
@@ -17,14 +17,42 @@ class Client:
 
         self.move = [0,0]
         self.next_move = [0,0]
+
+        # list dict of last pings sent, code : timestamp
+        self.sent_pings = {}
+        self.next_ping_id = 0
+        # list of pings times to this client
+        self.ping_list = []
+
+        self.ping = 0
+
         
-         # TODO_ --> Auto sync with client on connection
-         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # TODO_ --> Auto sync with client on connection
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.max_angle_turn = 2.5 * (60/20)
         self.angle_change = 0
 
         self.next_angle_change = 0;
+
+
+    def calc_ping(self, pingid, return_time):
+        sent_time = self.sent_pings.get(pingid, None)
+
+        del self.sent_pings[pingid]
+
+        if sent_time is None:
+            print("PING ID unrecognized")
+            return;
         
+        self.ping_list.append(return_time - sent_time)
+
+        if len(self.ping_list) > 15:
+            self.ping_list.pop(0)
+
+        # rough average. later can make it favor recent ones more
+        self.ping = ceil(sum(self.ping_list) / len(self.ping_list))
+
+    
     def processInput(self, tick):
 
        
@@ -46,7 +74,7 @@ class Client:
         angle_overFlow = abs(self.angle_change) - self.max_angle_turn
         
         if angle_overFlow > 0:
-            print("ANGLE OVERFLOW")
+            # print("ANGLE OVERFLOW")
             self.angle_change -= (angle_sign * angle_overFlow); 
             self.next_angle_change += (angle_sign * angle_overFlow);
 
