@@ -35,7 +35,8 @@ class Client:
 
         self.next_angle_change = 0;
 
-        self.mousedown = False;
+        # numbers of times mouse was down TEMPORARY
+        self.mousedown = 0 
 
 
     def calc_ping(self, pingid, return_time):
@@ -105,10 +106,12 @@ class Client:
         self.last_verified_input = self.last_received_input;
 
         # if user had mousedown in past 3 ticks (need to adjust it to an array so multiple shots can go thru)
-        if(self.mousedown):
+        b = 0;
+        while(b < self.mousedown):
             self.match.events.append([0,self.entity.x, self.entity.y, self.entity.angle])
+            b += 1;
 
-        self.mousedown = False
+        self.mousedown = 0
         self.angle_change = 0;
         self.move = [0,0]
 
@@ -118,5 +121,6 @@ class Client:
         self.move[0] += horz
         self.move[1] += vert
         self.angle_change += angle_delta;
-        self.mousedown = mousedown
+
+        self.mousedown += mousedown
 

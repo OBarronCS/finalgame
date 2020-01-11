@@ -80,9 +80,7 @@ class Game(threading.Thread):
         game_messages.update({"e":self.events})
 
         self.events = []
-
-        # clears the list of entites to get rid of since last step
-        self.entities_to_remove = [];
+        self.entities_to_remove = []
 
         # Broadcast world state to everyone
         #print(time_ms)
