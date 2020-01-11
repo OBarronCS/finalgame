@@ -109,6 +109,7 @@ class Client:
         b = 0;
         while(b < self.mousedown):
             self.match.events.append([0,self.entity.x, self.entity.y, self.entity.angle])
+            self.match.collision.hitscan_collision(self.entity.x, self.entity.y,self.entity.angle,860, self.entity.entity_id)
             b += 1;
 
         self.mousedown = 0

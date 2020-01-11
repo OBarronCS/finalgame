@@ -7,9 +7,14 @@ class Entity:
         self.speed = 75; # pixels per second
         self.angle = 0;
 
+        # collision box is a circle
+        self.radius = 11
+
+        self.health = 100
+
     def getState(self):
         # rounds position -> int(round(x), to make the packet smaller
-        return {"e_id":self.entity_id, "x":int(round(self.x)), "y": int(round(self.y)), "a":round(self.angle)}
+        return {"e_id":self.entity_id, "x":int(round(self.x)), "y": int(round(self.y)), "a":round(self.angle), "h":self.health}
 
     def applyInput(self,move_data, angle_change):
         self.x += (move_data[0]/60) * self.speed;

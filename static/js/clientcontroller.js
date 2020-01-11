@@ -204,7 +204,7 @@ export default class ClientObjectController {
         const mousedown = this.input.getMouseDown();
 
         if(mousedown){
-            new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
+            //new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
         }
 
 

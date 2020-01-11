@@ -2,7 +2,7 @@
 import eventlet;
 eventlet.monkey_patch();
 
-import entity, client, threading, time, random;
+import entity, client, threading, time, random, collisionhandler;
 
 class Game(threading.Thread):
     # Game loop in here?
@@ -14,6 +14,8 @@ class Game(threading.Thread):
         self.clients = [];
         self.entities = [];
         self.tickrate = 20
+
+        self.collision = collisionhandler.CollisionHandler(self)
 
         # This one is not in used RN
         self.last_processed_input = [];

@@ -223,6 +223,13 @@ export default class MatchConnection {
                             this.entitylist.splice(j,1)
                         }
                     }  
+                } else if(id == 2){
+                    console.log("ASHGASUFASUY")
+                    let e = this.entities[events[k][1]]
+                    if(e != null){
+                        e.health = events[k][2];
+                        p
+                    }
                 }
             }
 

@@ -7,18 +7,34 @@ export default class Entity {
         this.x = x;
         this.y = y;
         this.entity_id = entity_id;
-        this.sprite = null
         this.angle = 0;
 
+        this.radius = 11;
+
+        this.health = 100;
+
+        this.sprite = null
+        
         // holds timestamped coordinate data for this client, held for the past 1 second.
         this.state_buffer = []
+
+        // HEALTH INFO
+        this.health_text = new PIXI.Text(`HP: ${this.health}`, {fontFamily : 'Arial', fontSize: 10, fill : 0xff1010, align : 'center'})
+
+        this.health_text.x = this.x - 8
+        this.health_text.y = this.y - 16
+
+        window.pixiapp.stage.addChild(this.health_text);
+
         // first index is timestamp, second is info
     }
 
+    // this function is called every step
     interpolate(target_time){
-        //if have enough info to interpolate them
-        //console.log(this.state_buffer.length)
+        this.health_text.text = `HP: ${this.health}`
 
+        this.health_text.x = this.x - 14
+        this.health_text.y = this.y - 25
 
 
         if(this.state_buffer.length >= 2){
