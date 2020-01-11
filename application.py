@@ -45,8 +45,8 @@ def joinmatch(data):
     game.addNewClient(sid)
 
 @socketio.on("cmd")
-def movement(horz,vert,input_num,angle_delta):
-    game.queueInput(request.sid, horz, vert, input_num, angle_delta);
+def movement(horz,vert,input_num,angle_delta, mousedown):
+    game.queueInput(request.sid, horz, vert, input_num, angle_delta, mousedown);
 
 # client returns 
 @socketio.on("p")

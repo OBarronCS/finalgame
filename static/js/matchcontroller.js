@@ -1,5 +1,6 @@
 import ClientObjectController from "./clientcontroller.js";
 import Entity from "./entity.js"
+import HitScan from "./hitscan.js";
 
 //  An instance of this class are created as you join the game.
 const step = 1/60;
@@ -200,6 +201,15 @@ export default class MatchConnection {
                 }
             }
 
+            //make a seperate event handler later
+            let k;
+            let events = message["game"]["e"]
+
+            for(k = 0; k < events.length; k++){
+                if(events[k][0] == 0){
+                    new HitScan(this, [ events[k][1], events[k][2] ], events[k][3] )
+                }
+            }
 
             for(let i = 0; i < stateData.length; i++){
                 let entity_state = stateData[i]

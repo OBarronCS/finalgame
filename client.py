@@ -1,8 +1,9 @@
 from math import copysign, ceil
 
 class Client:
-    def __init__(self, maxInputs, player_id, sid):
+    def __init__(self, match, maxInputs, player_id, sid):
         # unique ID to identify player ((length of things))
+        self.match = match
         self.maxInputs = maxInputs;
         self.player_id = player_id;
 
@@ -34,6 +35,8 @@ class Client:
 
         self.next_angle_change = 0;
 
+        self.mousedown = False;
+
 
     def calc_ping(self, pingid, return_time):
         sent_time = self.sent_pings.get(pingid, None)
@@ -46,7 +49,7 @@ class Client:
         
         self.ping_list.append(return_time - sent_time)
 
-        if len(self.ping_list) > 15:
+        if len(self.ping_list) > 10:
             self.ping_list.pop(0)
 
         # print(sum(self.ping_list))
@@ -56,8 +59,6 @@ class Client:
 
     
     def processInput(self, tick):
-
-       
         self.move[0] += self.next_move[0];
         self.move[1] += self.next_move[1];
         
@@ -103,14 +104,19 @@ class Client:
         self.entity.applyInput(self.move, self.angle_change)
         self.last_verified_input = self.last_received_input;
 
+        # if user had mousedown in past 3 ticks (need to adjust it to an array so multiple shots can go thru)
+        if(self.mousedown):
+            self.match.events.append([0,self.entity.x, self.entity.y, self.entity.angle])
+
+        self.mousedown = False
         self.angle_change = 0;
         self.move = [0,0]
 
-    def addInput(self, horz, vert, input_num, angle_delta):
+    def addInput(self, horz, vert, input_num, angle_delta, mousedown):
         # currently hackable if user sets horz or vert to something else than -1,0,1
         self.last_received_input = input_num
         self.move[0] += horz
         self.move[1] += vert
         self.angle_change += angle_delta;
-
+        self.mousedown = mousedown
 

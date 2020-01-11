@@ -22,7 +22,9 @@ class Game(threading.Thread):
 
         self.sid_to_client = {}
 
-    def queueInput(self, sid, horz, vert, input_num, angle_delta):
+        self.events = []
+
+    def queueInput(self, sid, horz, vert, input_num, angle_delta, mousedown):
 
         client = self.sid_to_client.get(sid, None)
         if client is None:
@@ -30,7 +32,7 @@ class Game(threading.Thread):
             print("movement linked to no client")
             return;
         
-        client.addInput(horz, vert, input_num, angle_delta)
+        client.addInput(horz, vert, input_num, angle_delta, mousedown)
 
 
     def processInputs(self):
@@ -75,6 +77,9 @@ class Game(threading.Thread):
         game_messages.update({"state":world_state})
         game_messages.update({"remove":self.entities_to_remove})
         game_messages.update({"timestamp":time_ms})
+        game_messages.update({"e":self.events})
+
+        self.events = []
 
         # clears the list of entites to get rid of since last step
         self.entities_to_remove = [];
@@ -157,7 +162,7 @@ class Game(threading.Thread):
         spawn_y = random.randint(50,350);
 
         # gives new client an unique player_id
-        new_client = client.Client(60 / self.tickrate , self.entity_id_num, sid);
+        new_client = client.Client(self, 60 / self.tickrate , self.entity_id_num, sid);
         self.entity_id_num += 1;
 
         new_entity = entity.Entity(spawn_x, spawn_y)

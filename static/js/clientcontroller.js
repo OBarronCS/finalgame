@@ -200,13 +200,15 @@ export default class ClientObjectController {
         }
 
 
-        if(this.input.getMouseDown()){
+
+        const mousedown = this.input.getMouseDown();
+
+        if(mousedown){
             new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
         }
 
 
-
-        if(sample_input != false || angle_delta != 0){
+        if(sample_input != false || angle_delta != 0 || mousedown){
             //Client side prediction here
             if(sample_input == false){
                 sample_input = { "horz": 0, "vert": 0 }
@@ -218,7 +220,7 @@ export default class ClientObjectController {
           
             this.input_number += 1;
 
-            window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number, angle_delta)
+            window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number, angle_delta, mousedown)
             
         }
     }
