@@ -41,7 +41,8 @@ class Client:
 
         self.angle_change += self.next_angle_change;
         self.next_angle_change = 0
-        angle_sign = copysign(1,self.next_angle_change)
+        
+        angle_sign = copysign(1,self.angle_change)
         angle_overFlow = abs(self.angle_change) - self.max_angle_turn
         
         if angle_overFlow > 0:

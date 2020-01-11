@@ -196,7 +196,6 @@ export default class ClientObjectController {
                 sample_input = { "horz": 0, "vert": 0 }
             }
 
-
             this.applyInput(sample_input)
 
             this.unauthorized_inputs.push([this.input_number,sample_input, this.entity.getX(), this.entity.getY()])
