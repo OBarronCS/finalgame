@@ -49,7 +49,7 @@ class Client:
         if len(self.ping_list) > 15:
             self.ping_list.pop(0)
 
-        print(sum(self.ping_list))
+        # print(sum(self.ping_list))
 
         # rough average. later can make it favor recent ones more
         self.ping = ceil(sum(self.ping_list) / len(self.ping_list))

@@ -1,5 +1,6 @@
 import ClientInputListener from "./clientinput.js";
 import Entity from "./entity.js";
+import HitScan from "./hitscan.js";
 
 // This deals with everything specifically to do with the object that the client controls.
 
@@ -85,7 +86,7 @@ export default class ClientObjectController {
         //not only process inputs, but interpolate me a bit
           //this code slowly adjusts our position to where we should be
         if(this.adjusting){
-            console.log("adjust loop")
+            //console.log("adjust loop")
             const maxtween_x = .1 * this.adjust_x;
             const maxtween_y = .1 * this.adjust_y;
 
@@ -107,7 +108,7 @@ export default class ClientObjectController {
             }
     
             this.entity.setPosition(cx,cy);
-            console.log(this.entity.getPosition())
+            //console.log(this.entity.getPosition())
         }
 
         const mousepoint = this.input.getMousePoint();
@@ -150,6 +151,14 @@ export default class ClientObjectController {
 
         this.graphics.angle = this.entity.getAngle() + (-Math.sign(angledif) * rect_angle)
 
+
+
+        /// ----- CALCING TARGET LOCATION---- ///
+        let target_x = this.entity.getX() + (mouse_dis * Math.cos((Math.PI/180)*this.graphics.angle));
+        let target_y = this.entity.getY() + (mouse_dis * Math.sin((Math.PI/180)*this.graphics.angle));
+        //console.log(`${target_x},${target_y}`)
+
+
         this.posline.clear()
         this.negline.clear()
 
@@ -189,6 +198,13 @@ export default class ClientObjectController {
         if(isNaN(angle_delta)){
             return;
         }
+
+
+        if(this.input.getMouseDown()){
+            new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
+        }
+
+
 
         if(sample_input != false || angle_delta != 0){
             //Client side prediction here

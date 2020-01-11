@@ -1,6 +1,8 @@
 export default class ClientInputListener {
 
 	constructor() {
+		this.mouse_down = false;
+
 		this.movement_keys = {
 			up: false,
 			down: false,
@@ -9,7 +11,16 @@ export default class ClientInputListener {
 		}
 
 		this.setKeyboardListeners();
+		this.setMouseListeners();
 	}
+
+	setMouseListeners(){
+		window.addEventListener("click", (data) => {
+			//console.log("CLICK")
+			this.mouse_down = true;
+		})
+	}
+
 
 	setKeyboardListeners() {
 
@@ -77,5 +88,12 @@ export default class ClientInputListener {
 	// returns dict {x:_ , y:} of the location of mouse pointer. Absolute value
 	getMousePoint(){
 		return window.mouse;
+	}
+	
+	getMouseDown(){
+		let temp_val = this.mouse_down
+		this.mouse_down = false;
+		return temp_val
+
 	}
 }

@@ -13,7 +13,6 @@ PIXI.Loader.shared.load(() => {
     
     window.mouse = window.pixiapp.renderer.plugins.interaction.mouse.global
 
-
     const server = new ServerConnection();
     server.joinGame();
 

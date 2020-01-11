@@ -52,7 +52,20 @@ export default class MatchConnection {
 
         this.ping = 0;
 
+        this.tick_objects = []
+
         requestAnimationFrame(this.loop_bind)
+    }
+
+    // deletes the object from the list
+    deleteTickingObject(obj){
+        let i;
+        for(i = 0;i  < this.tick_objects.length; i++){
+            if(obj == this.tick_objects[i]){
+                this.tick_objects.splice(k,1)
+                return;
+            }
+        }
     }
 
     gameLoop(this_timestamp){
@@ -95,7 +108,15 @@ export default class MatchConnection {
 
         let stepnum = 0;
         // ensures if refresh rate is above 60 that it only runs this often
-        if(this.delta >= step){            
+        if(this.delta >= step){ 
+            let i;
+            for(i = 0; i < this.tick_objects.length;i++){
+                this.tick_objects[i].tick();
+            }
+            
+
+
+
             let target_time = this.time_ms - this.lerp_ms;
             
             this.updateEntities(target_time)

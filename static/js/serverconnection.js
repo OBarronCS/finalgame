@@ -31,7 +31,7 @@ export default class ServerConnection {
 
         //Server calls this periodically to get the round trip time
         this.socket.on("p", (data) => {
-            console.log("P")
+            //console.log("P")
             this.socket.emit("p", data)
         });
         ///// TESTING
