@@ -21,7 +21,7 @@ class CollisionHandler:
         
         # extremely(!!!!) inneffiecient, but it works for now 
 
-        while(i < length / inc):
+        while(i < (length / inc) + 1):
             for entity in self.match.entities:
                 if entity.entity_id != origin_id:
                     dis = sqrt((x - entity.x)**2 + (y - entity.y)**2)
