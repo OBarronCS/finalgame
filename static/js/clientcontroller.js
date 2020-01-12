@@ -125,7 +125,7 @@ export default class ClientObjectController {
         //difference between current angle and angle to mouse
         const angledif = (this.entity.getAngle() - mouseangle + 540) % 360 - 180;
         
-        let angle_delta = Math.min(Math.abs(angledif), Math.abs(this.max_angle_turn));
+        let angle_delta = Math.min(Math.abs(angledif), Math.abs(this.max_angle_turn)).toFixed(3);
         
         angle_delta *= -Math.sign(angledif);
 
