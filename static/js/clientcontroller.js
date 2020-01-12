@@ -85,6 +85,9 @@ export default class ClientObjectController {
     processInputs(dt){
         //not only process inputs, but interpolate me a bit
           //this code slowly adjusts our position to where we should be
+        this.entity.updateHealth();
+
+
         if(this.adjusting){
             //console.log("adjust loop")
             const maxtween_x = .1 * this.adjust_x;

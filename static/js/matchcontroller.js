@@ -63,7 +63,7 @@ export default class MatchConnection {
         let i;
         for(i = 0;i  < this.tick_objects.length; i++){
             if(obj == this.tick_objects[i]){
-                this.tick_objects.splice(k,1)
+                this.tick_objects.splice(i,1)
                 return;
             }
         }
@@ -214,7 +214,7 @@ export default class MatchConnection {
                 } else if(id == 1){
                     //immediately removes entities that have disconnected
                     console.log("deleted a player")
-                    this.entities[events[k][1]].deleteSprite();
+                    this.entities[events[k][1]].cleanUp();
 
                     delete this.entities[events[k][1]]
 
@@ -224,11 +224,9 @@ export default class MatchConnection {
                         }
                     }  
                 } else if(id == 2){
-                    console.log("ASHGASUFASUY")
                     let e = this.entities[events[k][1]]
                     if(e != null){
                         e.health = events[k][2];
-                        p
                     }
                 }
             }

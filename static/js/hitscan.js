@@ -53,7 +53,7 @@ export default class HitScan {
         
 
         if(this.objects.length == 0){
-            this.match.deleteTickingObject()
+            this.match.deleteTickingObject(this)
         }
         
     }

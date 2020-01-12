@@ -19,23 +19,47 @@ export default class Entity {
         this.state_buffer = []
 
         // HEALTH INFO
-        this.health_text = new PIXI.Text(`HP: ${this.health}`, {fontFamily : 'Arial', fontSize: 10, fill : 0xff1010, align : 'center'})
+        this.health_text = new PIXI.Text(`HP: ${this.health}`, {fontFamily : "\"Lucida Console\", Monaco, monospace", fontSize: 8, fill : 0x5298fa})
 
-        this.health_text.x = this.x - 8
-        this.health_text.y = this.y - 16
+        this.health_back = new PIXI.Graphics();
+        pixiapp.stage.addChild(this.health_back);
+
+        this.health_front = new PIXI.Graphics();
+        pixiapp.stage.addChild(this.health_front);
+        
+        
+        this.health_length = 28
+
+        this.health_text.x = this.x - 14
+        this.health_text.y = this.y - 30
 
         window.pixiapp.stage.addChild(this.health_text);
 
         // first index is timestamp, second is info
     }
 
-    // this function is called every step
-    interpolate(target_time){
+    updateHealth(){
+        this.health_back.clear()
+        this.health_front.clear()
+
+        this.health_back.beginFill(0x000000)
+        this.health_back.drawRect(this.x - (this.health_length / 2), this.y - 21, this.health_length, 6)
+        this.health_back.endFill()
+
+        this.health_front.beginFill(0x1cbd5a)
+        this.health_front.drawRect(this.x - (this.health_length / 2), this.y - 21, (Math.max(0,this.health)/100) * this.health_length, 6)
+        this.health_front.endFill()
+
+
         this.health_text.text = `HP: ${this.health}`
 
         this.health_text.x = this.x - 14
-        this.health_text.y = this.y - 25
+        this.health_text.y = this.y - 30
+    }
 
+    // this function is called every step
+    interpolate(target_time){
+        this.updateHealth();
 
         if(this.state_buffer.length >= 2){
             while(this.state_buffer.length > 2 && target_time >= this.state_buffer[1][0]){
@@ -85,6 +109,14 @@ export default class Entity {
         }
 
         this.sprite.angle = angle
+    }
+
+    cleanUp(){
+        this.deleteSprite()
+        this.health_front.destroy()
+        this.health_back.destroy()
+        this.health_text.destroy()
+
     }
 
     deleteSprite(){
