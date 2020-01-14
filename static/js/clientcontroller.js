@@ -123,7 +123,7 @@ export default class ClientObjectController {
         //mouseangle now = angle to mouse in degrees
 
         //difference between current angle and angle to mouse
-        const angledif = (this.entity.getAngle() - mouseangle + 540) % 360 - 180;
+        const angledif = parseFloat(((this.entity.getAngle() - mouseangle + 540) % 360 - 180).toFixed(3));
         
         let angle_delta = Math.min(Math.abs(angledif), Math.abs(this.max_angle_turn)).toFixed(3);
         
@@ -131,29 +131,29 @@ export default class ClientObjectController {
 
 
         this.entity.turnByDegrees(angle_delta)
-        //console.log(this.entity.getAngle())
+
+        const new_angledif = parseFloat(((this.entity.getAngle() - mouseangle + 540) % 360 - 180).toFixed(3));
+
         ///// ----------- DRAWING THE AIM RECTANGL
 
         //distance from player to mouse
         const mouse_dis = Math.sqrt(Math.pow(mousepoint.x - this.entity.x,2) + (Math.pow(mousepoint.y - this.entity.y,2)))
         
         //clear completely clears all settings and past draw things with this object
+        this.graphics.x = this.entity.x;
+        this.graphics.y = this.entity.y;
+        
         this.graphics.clear()
         this.graphics.lineStyle(2, 0xFF0000);
         this.graphics.pivot.x = 6
         this.graphics.pivot.y = 6
-
-        this.graphics.drawRect(mouse_dis, 0, 12, 12);
-        // MAKE SURE THESE ARE HALF OF WIDTH SO MOUSE STAYS IN MIDDLE
         
-        this.graphics.x = this.entity.x;
-        this.graphics.y = this.entity.y;
+        
+        let rect_angle = parseFloat(Math.min(this.max_angle_view, Math.abs(new_angledif)).toFixed(3));
 
-        let rect_angle = Math.min(Math.abs(this.max_angle_view), Math.abs(angledif));
-        //console.log(rect_angle)
-
-        this.graphics.angle = this.entity.getAngle() + (-Math.sign(angledif) * rect_angle)
-
+        this.graphics.angle = this.entity.getAngle() + -(Math.sign(new_angledif) * rect_angle)
+        
+        this.graphics.drawRect(mouse_dis, 0, 12, 12);
 
 
         /// ----- CALCING TARGET LOCATION---- ///
