@@ -1,6 +1,7 @@
 import ClientInputListener from "./clientinput.js";
 import Entity from "./entity.js";
 import HitScan from "./hitscan.js";
+import FixedEntity from "./fixedentity.js"
 
 // This deals with everything specifically to do with the object that the client controls.
 
@@ -208,6 +209,7 @@ export default class ClientObjectController {
 
         if(mousedown){
             //new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
+            // new FixedEntity(this.match, this.entity.getX(),this.entity.getY(),this.entity.getAngle())
         }
 
 
