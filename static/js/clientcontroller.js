@@ -198,7 +198,7 @@ export default class ClientObjectController {
             angle_delta = 0;
         }
 
-            // happens when renderer breaks. would break server rn becuase not validating inputs
+        // happens when renderer breaks. would break server rn becuase not validating inputs
         if(isNaN(angle_delta)){
             return;
         }
@@ -209,7 +209,7 @@ export default class ClientObjectController {
 
         if(mousedown){
             //new HitScan(this.match, [this.entity.getX(), this.entity.getY()],this.graphics.angle)
-            // new FixedEntity(this.match, this.entity.getX(),this.entity.getY(),this.entity.getAngle())
+            //new FixedEntity(this.match, this.entity.getX(),this.entity.getY(),this.entity.getAngle())
         }
 
 

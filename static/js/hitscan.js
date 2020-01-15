@@ -22,7 +22,7 @@ export default class HitScan {
         match.tick_objects.push(this)
     }
 
-    tick(){
+    tick(current_time){
         let todelete = [];
 
         let i;

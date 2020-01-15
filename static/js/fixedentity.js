@@ -8,17 +8,22 @@ const resources = PIXI.Loader.shared.resources;
 
 export default class FixedEntity {
 
-    constructor(match, x,y, angle){
+    constructor(match, x,y, spd, angle, time, max_dis){
+        this.initial_x = x
+        this.initial_y = y;
         this.x = x;
         this.y = y;
+        this.speed = spd
         this.angle = angle
+        this.initial_time = time;
+        this.max_dis = max_dis
         this.sprite = null
+
         this.setSprite("static/images/basic_proj.png")
 
         this.sprite.angle = this.angle
 
         this.match = match
-        this.speed = 40
         
         this.inc_x = this.speed * Math.cos(angle * (Math.PI/180))
         this.inc_y = this.speed * Math.sin(angle * (Math.PI/180))
@@ -28,12 +33,12 @@ export default class FixedEntity {
         this.ticks = 0;
     }
 
-    tick(){
-        this.setPosition(this.x + this.inc_x, this.y + this.inc_y)
+    tick(current_time){
+        const delta = (current_time - this.initial_time) / 1000 // to convert to seconds
+        console.log(delta)
 
-        if(this.ticks++ == 21){
-            this.destroy()
-        }
+        this.setPosition(this.initial_x + (delta * this.inc_x), this.initial_y + (delta * this.inc_y))
+
     }
 
     destroy(){
@@ -45,6 +50,15 @@ export default class FixedEntity {
     setPosition(new_x, new_y){
         this.x = new_x;
         this.y = new_y;
+
+        const a = new_x - this.initial_x;
+        const b = new_y - this.initial_y;
+
+        const c = Math.sqrt( a*a + b*b );
+        if(c > this.max_dis){
+            this.destroy()
+            return;
+        }
 
         if(this.sprite != null){
             this.sprite.x = new_x;

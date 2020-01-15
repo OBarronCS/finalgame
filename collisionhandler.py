@@ -4,9 +4,40 @@ class CollisionHandler:
     def __init__(self,match):
         self.match = match
 
+        # they have format [projectile id, origin entity_id]
+        self.projectiles = []
+        self.to_destroy = []
         # self.match.entities is list of entities.
 
+    def step(self, delta):
+        for proj in self.projectiles:
+            proj.step(delta)
 
+            for entity in self.match.entities:
+                if entity.entity_id != proj.entity_id:
+                    dis = sqrt((proj.x - entity.x)**2 + (proj.y - entity.y)**2)
+                    if dis < entity.radius + 2:
+                        print("COLLISION")
+                        entity.health -= 6
+                        self.match.events.append([2,entity.entity_id,entity.health])
+                        self.to_destroy.append(proj)
+                        break;
+        
+        for proj in self.to_destroy:
+            self.destroy_proj(proj)
+
+        # print(len(self.projectiles))
+        self.to_destroy = []
+
+    def destroy_proj(self, proj):
+        self.projectiles.remove(proj)
+   
+
+        # checking for their collisions
+
+
+    def start_projectile(self, proj):
+        self.projectiles.append(proj)
 
     def hitscan_collision(self, start_x, start_y, angle, length, origin_id):
         inc = 10

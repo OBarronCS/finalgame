@@ -127,7 +127,7 @@ class Game(threading.Thread):
                     #print(accumulator);
 
                     self.processInputs();
-                    
+                    self.collision.step(dt)
 
                     accumulator -= dt;
                     t += dt;

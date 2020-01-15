@@ -1,4 +1,5 @@
 from math import copysign, ceil
+import projectile, time
 
 class Client:
     def __init__(self, match, maxInputs, player_id, sid):
@@ -110,6 +111,10 @@ class Client:
         while(b < self.mousedown):
             self.match.events.append([0,self.entity.x, self.entity.y, self.entity.angle])
             self.match.collision.hitscan_collision(self.entity.x, self.entity.y,self.entity.angle,860, self.entity.entity_id)
+            
+            # projectile thing!
+            self.match.collision.start_projectile(projectile.Projectile(self.match, self.player_id, self.entity.x, self.entity.y, 5, 200, self.entity.angle, 400))
+            
             b += 1;
 
         self.mousedown = 0

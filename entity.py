@@ -16,6 +16,12 @@ class Entity:
         # rounds position -> int(round(x), to make the packet smaller
         return {"e_id":self.entity_id, "x":int(round(self.x)), "y": int(round(self.y)), "a":round(self.angle), "h":self.health}
 
+    def getFullState(self):
+        # [event_id, entity_id, x, y, angle, hp]
+        return [self.entity_id, int(round(self.x)), int(round(self.y)), round(self.angle), self.health]
+
+
+
     def applyInput(self,move_data, angle_change):
         self.x += (move_data[0]/60) * self.speed;
         self.y += (move_data[1]/60) * self.speed;

@@ -1,6 +1,7 @@
 import ClientObjectController from "./clientcontroller.js";
 import Entity from "./entity.js"
 import HitScan from "./hitscan.js";
+import FixedEntity from "./fixedentity.js"
 
 //  An instance of this class are created as you join the game.
 const step = 1/60;
@@ -112,7 +113,7 @@ export default class MatchConnection {
         if(this.delta >= step){ 
             let i;
             for(i = 0; i < this.tick_objects.length;i++){
-                this.tick_objects[i].tick();
+                this.tick_objects[i].tick(this.time_ms);
             }
             
 
@@ -209,9 +210,9 @@ export default class MatchConnection {
                 const id = events[k][0];
 
 
-                if(id == 0){
+                if(id == 0){ // create hitscan
                     new HitScan(this, [ events[k][1], events[k][2] ], events[k][3] )
-                } else if(id == 1){
+                } else if(id == 1){ //delete player
                     //immediately removes entities that have disconnected
                     console.log("deleted a player")
                     this.entities[events[k][1]].cleanUp();
@@ -223,11 +224,13 @@ export default class MatchConnection {
                             this.entitylist.splice(j,1)
                         }
                     }  
-                } else if(id == 2){
+                } else if(id == 2){ //player damaged
                     let e = this.entities[events[k][1]]
                     if(e != null){
                         e.health = events[k][2];
                     }
+                } else if(id == 3){
+                    new FixedEntity(this, events[k][1], events[k][2], events[k][4], events[k][5], events[k][6], events[k][7])
                 }
             }
 
