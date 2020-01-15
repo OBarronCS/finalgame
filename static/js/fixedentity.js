@@ -35,7 +35,7 @@ export default class FixedEntity {
 
     tick(current_time){
         const delta = (current_time - this.initial_time) / 1000 // to convert to seconds
-        console.log(delta)
+        //console.log(delta)
 
         this.setPosition(this.initial_x + (delta * this.inc_x), this.initial_y + (delta * this.inc_y))
 

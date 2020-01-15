@@ -30,7 +30,11 @@ class CollisionHandler:
         self.to_destroy = []
 
     def destroy_proj(self, proj):
-        self.projectiles.remove(proj)
+        try:
+            self.projectiles.remove(proj)
+        except ValueError:
+            pass  # this sometimes has an error, and idk why
+        
    
 
         # checking for their collisions
