@@ -25,6 +25,8 @@ export default class Renderer {
         PIXI.Loader.shared
             .add(game_sprites)
 
+        const _bind = this;
+
         window.onresize = function (event){
             const w = window.innerWidth;
             const h = window.innerHeight;
@@ -33,8 +35,8 @@ export default class Renderer {
             this.pixiapp.view.width = w - 25;
             this.pixiapp.view.height = h - 25;
 
-            this.camera_width = w - 25;
-            this.camera_height = h - 25;
+            _bind.camera_width = w - 25;
+            _bind.camera_height = h - 25;
 
         }
     }
@@ -57,6 +59,7 @@ export default class Renderer {
     // takes in the entity it is following
     updateScreen(entity){
         // the top left corner of screen. camera x,y
+
         const _x = Math.max(0,entity.x - (this.camera_width / 2));
         const _y = Math.max(0,entity.y - (this.camera_height / 2));
 
