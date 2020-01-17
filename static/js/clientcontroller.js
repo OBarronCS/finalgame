@@ -2,6 +2,7 @@ import ClientInputListener from "./clientinput.js";
 import Entity from "./entity.js";
 import HitScan from "./hitscan.js";
 import FixedEntity from "./fixedentity.js"
+import Renderer from "./renderer.js";
 
 // This deals with everything specifically to do with the object that the client controls.
 
@@ -16,7 +17,7 @@ export default class ClientObjectController {
         ///------- Adds the rectangle showing where you are actually aiming
         this.graphics = new PIXI.Graphics();
         this.graphics.lineStyle(2, 0xFF0000);
-        pixiapp.stage.addChild(this.graphics);
+        window.renderer.addSprite(this.graphics, 1);
 
         //0, 0 in reference to this object
         /*
@@ -32,14 +33,14 @@ export default class ClientObjectController {
         this.posline.lineStyle(1, 0xFFFFFF);
         this.posline.alpha = .2
         this.posline.lineTo(250, 0);
-        pixiapp.stage.addChild(this.posline);
+        window.renderer.addSprite(this.posline,0);
         
 
         this.negline = new PIXI.Graphics();
         this.negline.lineStyle(1, 0xFFFFFF);
         this.negline.alpha = .2
         this.negline.lineTo(250, 0);
-        pixiapp.stage.addChild(this.negline);
+        window.renderer.addSprite(this.negline,0);
 
         this.entity_id = data["player_id"];
 

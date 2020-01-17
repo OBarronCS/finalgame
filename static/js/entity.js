@@ -22,10 +22,10 @@ export default class Entity {
         this.health_text = new PIXI.Text(`HP: ${this.health}`, {fontFamily : "\"Lucida Console\", Monaco, monospace", fontSize: 8, fill : 0x5298fa})
 
         this.health_back = new PIXI.Graphics();
-        pixiapp.stage.addChild(this.health_back);
+        window.renderer.addSprite(this.health_back,0);
 
         this.health_front = new PIXI.Graphics();
-        pixiapp.stage.addChild(this.health_front);
+        window.renderer.addSprite(this.health_front,0);
         
         
         this.health_length = 28
@@ -33,7 +33,7 @@ export default class Entity {
         this.health_text.x = this.x - 14
         this.health_text.y = this.y - 30
 
-        window.pixiapp.stage.addChild(this.health_text);
+        window.renderer.addSprite(this.health_text,0);
 
         // first index is timestamp, second is info
     }
@@ -120,7 +120,7 @@ export default class Entity {
     }
 
     deleteSprite(){
-        window.pixiapp.stage.removeChild(this.sprite)
+        window.renderer.removeSprite(this.sprite)
     }
 
     //none of this takes into considering anything smooth or good looking
@@ -146,7 +146,7 @@ export default class Entity {
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
 
-        window.pixiapp.stage.addChild(this.sprite)
+        window.renderer.addSprite(this.sprite,0)
 
     }
 

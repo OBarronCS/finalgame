@@ -3,16 +3,14 @@
 const Sprite = PIXI.Sprite;
 const resources = PIXI.Loader.shared.resources;
 
-
-"static/images/basic_proj.png"
-
 export default class FixedEntity {
 
-    constructor(match, x,y, spd, angle, time, max_dis){
+    constructor(match, x,y, r, spd, angle, time, max_dis){
         this.initial_x = x
         this.initial_y = y;
         this.x = x;
         this.y = y;
+        this.r = r;
         this.speed = spd
         this.angle = angle
         this.initial_time = time;
@@ -20,6 +18,10 @@ export default class FixedEntity {
         this.sprite = null
 
         this.setSprite("static/images/basic_proj.png")
+
+        this.sprite.width = r;
+        this.sprite.height = r;
+
 
         this.sprite.angle = this.angle
 
@@ -44,7 +46,7 @@ export default class FixedEntity {
     destroy(){
         this.match.deleteTickingObject(this)
 
-        window.pixiapp.stage.removeChild(this.sprite)
+        window.renderer.removeSprite(this.sprite)
     }
 
     setPosition(new_x, new_y){
@@ -78,7 +80,7 @@ export default class FixedEntity {
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
 
-        window.pixiapp.stage.addChild(this.sprite)
+        window.renderer.addSprite(this.sprite,0)
 
     }
 }

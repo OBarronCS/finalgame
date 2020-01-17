@@ -87,7 +87,11 @@ export default class ClientInputListener {
 
 	// returns dict {x:_ , y:} of the location of mouse pointer. Absolute value
 	getMousePoint(){
-		return window.mouse;
+		console.log(window.mouse)
+		console.log(`${window.renderer.camera.pivot.x}, ${window.renderer.camera.pivot.y}`)
+		return {"x":window.mouse.x + window.renderer.camera.pivot.x, "y":window.mouse.y + window.renderer.camera.pivot.y};
+
+	
 	}
 	
 	getMouseDown(){

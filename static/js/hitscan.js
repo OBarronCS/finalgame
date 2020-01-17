@@ -17,7 +17,7 @@ export default class HitScan {
 
         let i;
         for(i = 0; i < this.objects.length; i++){
-            window.pixiapp.stage.addChild(this.objects[i])
+            window.renderer.addSprite(this.objects[i],0)
         }
         match.tick_objects.push(this)
     }

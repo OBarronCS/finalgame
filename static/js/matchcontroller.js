@@ -50,7 +50,7 @@ export default class MatchConnection {
         this.ping_text.x = 6
         this.ping_text.y = 10
 
-        window.pixiapp.stage.addChild(this.ping_text);
+        window.renderer.addSprite(this.ping_text,0);
 
         this.ping = 0;
 
@@ -131,6 +131,8 @@ export default class MatchConnection {
             if(stepnum > 10){
                 this.snapback();
             }
+            const e = this.client.entity
+            window.renderer.updateScreen(e)
         }
         this.lasttimestamp = this_timestamp;
     }
@@ -162,7 +164,7 @@ export default class MatchConnection {
           return array[half];
       
         return (array[half - 1] + array[half]) / 2.0;
-      }
+    }
 
     setSocketListeners(){
         this.socket.on("gamestate", message => {
@@ -230,7 +232,7 @@ export default class MatchConnection {
                         e.health = events[k][2];
                     }
                 } else if(id == 3){
-                    new FixedEntity(this, events[k][1], events[k][2], events[k][4], events[k][5], events[k][6], events[k][7])
+                    new FixedEntity(this, events[k][1], events[k][2], events[k][3], events[k][4], events[k][5], events[k][6], events[k][7])
                 }
             }
 
