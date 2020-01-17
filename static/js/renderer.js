@@ -8,7 +8,13 @@ export default class Renderer {
         this.camera_height = height;
 
         this.camera = new PIXI.Container();
+        this.camera.sortableChildren = true;
+        this.camera.zIndex = 0;
         this.pixiapp.stage.addChild(this.camera)
+
+        this.gui = new PIXI.Container();
+        this.gui.zIndex = 1;
+        this.pixiapp.stage.addChild(this.gui)
 
         const displayDiv = document.querySelector('#display')
         displayDiv.appendChild(this.pixiapp.view);
@@ -34,6 +40,10 @@ export default class Renderer {
     }
 
     // adds the given sprite to the canvas at the given z layer. The higher the layer, the closer to the top
+    addGUI(sprite){
+        this.gui.addChild(sprite)
+    }
+    
     addSprite(sprite, z){
         sprite.zIndex = z;
         this.camera.addChild(sprite)

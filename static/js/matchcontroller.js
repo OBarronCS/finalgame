@@ -50,7 +50,7 @@ export default class MatchConnection {
         this.ping_text.x = 6
         this.ping_text.y = 10
 
-        window.renderer.addSprite(this.ping_text,0);
+        window.renderer.addGUI(this.ping_text);
 
         this.ping = 0;
 
