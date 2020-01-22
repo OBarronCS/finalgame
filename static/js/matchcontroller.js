@@ -2,6 +2,7 @@ import ClientObjectController from "./clientcontroller.js";
 import Entity from "./entity.js"
 import HitScan from "./hitscan.js";
 import FixedEntity from "./fixedentity.js"
+import TileMap from "./tilemap.js";
 
 //  An instance of this class are created as you join the game.
 const step = 1/60;
@@ -32,8 +33,8 @@ export default class MatchConnection {
         this.ticksperupdate = 60 / data["tickrate"];
 
         this.client = new ClientObjectController(data, this);
-        this.pixiapp = window.pixiapp;
-        
+        this.tilemap = new TileMap(this, data)
+
         this.setSocketListeners();
         
         this.delta = 0;

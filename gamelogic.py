@@ -2,7 +2,7 @@
 import eventlet;
 eventlet.monkey_patch();
 
-import entity, client, threading, time, random, collisionhandler;
+import entity, client, threading, time, random, collisionhandler, tilemap;
 
 class Game(threading.Thread):
     # Game loop in here?
@@ -16,6 +16,7 @@ class Game(threading.Thread):
         self.tickrate = 20
 
         self.collision = collisionhandler.CollisionHandler(self)
+        self.tilemap = tilemap.TileMap(2048, 2048, 32)
 
         # This one is not in used RN
         self.last_processed_input = [];
@@ -173,5 +174,5 @@ class Game(threading.Thread):
         self.clients.append(new_client)
         self.sid_to_client.update({sid:new_client});
 
-        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate, "timestamp":int(time.time() * 1000)}, room = sid)
+        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate, "winfo":self.tilemap.getTileMapInfo() , "walls":self.tilemap.getWalls(), "timestamp":int(time.time() * 1000)}, room = sid)
     
