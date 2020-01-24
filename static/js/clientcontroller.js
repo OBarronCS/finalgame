@@ -63,6 +63,7 @@ export default class ClientObjectController {
         // form: [0] = input number [1] is the input itself
         this.unauthorized_inputs = [];
         this.input_number = 0;
+        this.last_verified_num = -1;
 
         this.speed = 75;
 
@@ -92,8 +93,8 @@ export default class ClientObjectController {
 
         if(this.adjusting){
             //console.log("adjust loop")
-            const maxtween_x = .1 * this.adjust_x;
-            const maxtween_y = .1 * this.adjust_y;
+            const maxtween_x = .1 * 2.5//this.adjust_x;
+            const maxtween_y = .1 * 2.5//this.adjust_y;
 
             let cx = this.entity.getX();
             let cy = this.entity.getY();
@@ -108,12 +109,11 @@ export default class ClientObjectController {
             cx += comp_x;
             cy += comp_y;
 
-            if(Math.abs(this.adjust_x) < .01 && Math.abs(this.adjust_y) < .01){
+            if(Math.abs(this.adjust_x) < .1 && Math.abs(this.adjust_y) < .1){
                 this.adjusting = false;
             }
     
             this.entity.setPosition(cx,cy);
-            //console.log(this.entity.getPosition())
         }
 
         const mousepoint = this.input.getMousePoint();
@@ -224,25 +224,30 @@ export default class ClientObjectController {
 
             this.unauthorized_inputs.push([this.input_number,sample_input, this.entity.getX(), this.entity.getY()])
           
-            this.input_number += 1;
+           
 
             window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number, angle_delta, mousedown)
-            
+            this.input_number += 1;
         }
     }
 
     //get server state and last authorized input, and from that get our current position
     reconcile(entity_state, verified_num){
-        // discard all the inputs that have been implicitly verified on the server,
-        // because they are less than or equal to this one (websockets guarentees order
+        if(this.last_verified_num == verified_num){
+            return;
+        }
+
+        this.last_verified_num = verified_num;
+
         if(this.unauthorized_inputs.length == 0){
+            //console.log("0 to start")
             return;
         }
 
         //if our first one is greater than the num, that means we have already discarded it.. 
         //which happens when we snap back
         if(this.unauthorized_inputs[0][0] > verified_num){
-            console.log("AIUSUGIY ADFIUASGFKu")
+            //console.log("middle")
             return;
         }
         
@@ -252,6 +257,7 @@ export default class ClientObjectController {
         // at this point, 0 index should = the verified_num
 
         if(this.unauthorized_inputs.length == 0){
+           // console.log("last")
             return;
         }
 
@@ -260,8 +266,8 @@ export default class ClientObjectController {
 
         const distance = Math.sqrt(Math.pow(_x - entity_state["x"],2) + (Math.pow(_y - entity_state["y"],2)))
 
-        //console.log("Discrepency: " + distance)
 
+        // console.log(distance)
         //if get to far away , , , snap back
         if(distance > 40){
             // snap reconciliation

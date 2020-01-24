@@ -1,5 +1,8 @@
+import hitbox
+
 class Entity:
-    def __init__(self,x,y):
+    def __init__(self,match,x,y):
+        self.match = match
         self.x = x;
         self.y = y;
         self.position_buffer = [];
@@ -11,6 +14,7 @@ class Entity:
         self.radius = 11
 
         self.health = 100
+        self.hitbox = hitbox.HitBox(x + self.radius, y - self.radius, x - self.radius, y + self.radius)
 
     def getState(self):
         # rounds position -> int(round(x), to make the packet smaller
@@ -23,10 +27,22 @@ class Entity:
 
 
     def applyInput(self,move_data, angle_change):
-        self.x += (move_data[0]/60) * self.speed;
-        self.y += (move_data[1]/60) * self.speed;
         self.angle += angle_change;
-        
+
+        last_x = self.x
+        self.x += (move_data[0]/60) * self.speed;
+        self.hitbox.setHitBox(self.x  + self.radius, self.y - self.radius, self.x  - self.radius, self.y + self.radius)
+        if(self.match.tilemap.wallCollision(self.hitbox)):
+            self.x = last_x
+            self.hitbox.setHitBox(self.x  + self.radius, self.y - self.radius, self.x  - self.radius, self.y + self.radius)
+
+        last_y = self.y
+        self.y += (move_data[1]/60) * self.speed;
+        self.hitbox.setHitBox(self.x  + self.radius, self.y - self.radius, self.x  - self.radius, self.y + self.radius)
+        if(self.match.tilemap.wallCollision(self.hitbox)):
+            self.y = last_y
+            self.hitbox.setHitBox(self.x  + self.radius, self.y - self.radius, self.x  - self.radius, self.y + self.radius)
+
         if self.angle > 360:
             self.angle -= 360
         if self.angle < 0:

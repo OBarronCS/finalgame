@@ -166,7 +166,7 @@ class Game(threading.Thread):
         new_client = client.Client(self, 60 / self.tickrate , self.entity_id_num, sid);
         self.entity_id_num += 1;
 
-        new_entity = entity.Entity(spawn_x, spawn_y)
+        new_entity = entity.Entity(self,spawn_x, spawn_y)
         new_entity.entity_id = new_client.player_id;
 
         # give client object a reference to the entity they are controlling

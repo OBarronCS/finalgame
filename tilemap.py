@@ -52,6 +52,36 @@ class TileMap:
     def getWalls(self):
         return self.walls_send
     
+    def wallCollision(self, hitbox):
+        left_tile = floor(hitbox.left / self.cellwidth)
+        right_tile = floor( hitbox.right / self.cellwidth)
+        top_tile = floor( hitbox.top / self.cellwidth)
+        bottom_tile =  floor(hitbox.bottom / self.cellwidth)
+
+        # print(f"{left_tile},{right_tile},{top_tile},{bottom_tile}")
+
+
+        if(left_tile < 0):
+            left_tile = 0
+        if(right_tile >= self.gridwidth):
+            right_tile = self.gridwidth - 1
+        if(top_tile < 0):
+            top_tile = 0
+        if(bottom_tile >= self.gridheight):
+            bottom_tile = self.gridheight - 1
+
+        i = left_tile;
+        while(i <= right_tile):
+            j = top_tile
+            while(j <= bottom_tile):
+                if(self.tilemap[i][j] == Tile.WALL):
+                    # print("WALL COLLISION")
+                    return True
+                j += 1
+            i += 1
+        return False
+
+
     def getOpenCoords(self):
         gridspot = random.choice(self.empty_tiles)
 
