@@ -20,10 +20,13 @@ export default class TileMap {
             this.tilemap.push(arr)
         }
 
+
+
         const walls = serverinfo["walls"]
 
         for(let i = 0; i < walls.length;i++){
-            this.tilemap[walls[i][0],walls[i][1]] = 1
+            this.tilemap[walls[i][0]][walls[i][1]] = 1
+
 
             const w  = new Sprite(
                 resources["static/images/basic_wall.png"].texture
@@ -37,8 +40,36 @@ export default class TileMap {
 
             window.renderer.addSprite(w,-1)
         }
-
     }
 
+    wallCollision(hitbox){
+        let left_tile = Math.floor(hitbox.left / this.cellwidth);
+        let right_tile = Math.floor( hitbox.right / this.cellwidth);
+        let top_tile = Math.floor( hitbox.top / this.cellwidth);
+        let bottom_tile =  Math.floor(hitbox.bottom / this.cellwidth);
+
+        // console.log(`${left_tile},${right_tile},${top_tile},${bottom_tile}`)
+
+
+        if(left_tile < 0) left_tile = 0
+        if(right_tile >= self.gridwidth)  right_tile = self.gridwidth - 1
+        if(top_tile < 0)  top_tile = 0
+        if(bottom_tile >= self.gridheight) bottom_tile = self.gridheight - 1
+
+
+        let i = left_tile;
+        while(i <= right_tile){
+            let j = top_tile
+            while(j <= bottom_tile){
+                if(this.tilemap[i][j] == 1){
+                    console.log("WALL COLLISION")
+                    return true
+                }
+                j += 1
+            }
+            i += 1
+        }
+        return false
+    }
         
 }

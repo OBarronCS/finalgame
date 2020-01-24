@@ -46,8 +46,9 @@ export default class ClientObjectController {
 
         let new_entity = new Entity(data["state"]["x"], data["state"]["y"],data["player_id"]);
 		new_entity.setSprite("static/images/player.png");
-        
         this.entity = new_entity;
+
+
 
 		// Add this entity to the clients list of entities
         match.entities[data["player_id"]] = new_entity;
@@ -86,11 +87,11 @@ export default class ClientObjectController {
     }
 
     processInputs(dt){
-        //not only process inputs, but interpolate me a bit
-          //this code slowly adjusts our position to where we should be
+        // moves health bar to be over myself
         this.entity.updateHealth();
 
-
+        //not only process inputs, but interpolate me a bit
+        //this code slowly adjusts our position to where we should be
         if(this.adjusting){
             //console.log("adjust loop")
             const maxtween_x = .1 * 2.5//this.adjust_x;
@@ -282,7 +283,7 @@ export default class ClientObjectController {
             this.adjust_y = 0;
 
             return;
-        } else if(distance > 10 && !this.adjusting){
+        } else if(distance > 9 && !this.adjusting){
             console.log("ADJUSTING")
 
             // these nums tell us how much ahead we are on each axis 
@@ -308,13 +309,19 @@ export default class ClientObjectController {
             return;
         }
 
-        let cx = this.entity.getX();
-        let cy = this.entity.getY();
+       
 
-        cx += this.speed * (input["horz"]/60)
-        cy += this.speed * (input["vert"]/60)
+        let last_x = this.entity.getX();
+        this.entity.setPosition(last_x + this.speed * (input["horz"]/60),this.entity.getY())
+        if(this.match.tilemap.wallCollision(this.entity.getHitBox())){
+            this.entity.setPosition(last_x,this.entity.getY())
+        }
 
-        this.entity.setPosition(cx,cy)
+        let last_y = this.entity.getY();
+        this.entity.setPosition(this.entity.getX(), last_y + this.speed * (input["vert"]/60))
+        if(this.match.tilemap.wallCollision(this.entity.getHitBox())){
+            this.entity.setPosition(this.entity.getX(), last_y)
+        }
     }
 
     update_state(){
@@ -325,3 +332,22 @@ export default class ClientObjectController {
         this.processInputs();
     }
 }
+/*
+if(this.entity == null){
+            return;
+        }
+
+       // this.match.tilemap.wallCollision(this.entity.getHitBox())
+
+        let cx = this.entity.getX();
+
+
+
+        
+        let cy = this.entity.getY();
+
+        cx += this.speed * (input["horz"]/60)
+        cy += this.speed * (input["vert"]/60)
+
+        this.entity.setPosition(cx,cy)
+*/

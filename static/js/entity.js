@@ -161,6 +161,11 @@ export default class Entity {
         return this.y;
     }
 
+    getHitBox(){
+        return {"right":this.x + this.radius, "top":this.y - this.radius, "left":this.x - this.radius, "bottom":this.y + this.radius, }
+    }
+
+
     getAngle(){
         return this.angle
     }
