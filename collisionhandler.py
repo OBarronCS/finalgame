@@ -17,7 +17,7 @@ class CollisionHandler:
                 if entity.entity_id != proj.entity_id:
                     dis = sqrt((proj.x - entity.x)**2 + (proj.y - entity.y)**2)
                     if dis < entity.radius + 2:
-                        print("COLLISION")
+                        # print("COLLISION")
                         entity.health -= 6
                         self.match.events.append([2,entity.entity_id,entity.health])
                         self.to_destroy.append(proj)
@@ -61,7 +61,7 @@ class CollisionHandler:
                 if entity.entity_id != origin_id:
                     dis = sqrt((x - entity.x)**2 + (y - entity.y)**2)
                     if dis < entity.radius + 2:
-                        print("COLLISION")
+                        # print("COLLISION")
                         entity.health -= 6
                         self.match.events.append([2,entity.entity_id,entity.health])
                         return;

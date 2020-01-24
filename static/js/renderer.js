@@ -57,11 +57,15 @@ export default class Renderer {
     }
 
     // takes in the entity it is following
-    updateScreen(entity){
+    updateScreen(entity, tilemap){
         // the top left corner of screen. camera x,y
 
-        const _x = Math.max(0,entity.x - (this.camera_width / 2));
-        const _y = Math.max(0,entity.y - (this.camera_height / 2));
+        let _x = Math.max(0,entity.x - (this.camera_width / 2));
+        let _y = Math.max(0,entity.y - (this.camera_height / 2));
+
+        _x = Math.min(_x, tilemap.pixelwidth - this.camera_width)
+        _y = Math.min(_y, tilemap.pixelheight - this.camera_height)
+
 
         this.camera.pivot.x = _x;
         this.camera.pivot.y = _y

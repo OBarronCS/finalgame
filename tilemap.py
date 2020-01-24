@@ -60,15 +60,19 @@ class TileMap:
 
         # print(f"{left_tile},{right_tile},{top_tile},{bottom_tile}")
 
-
+        # returns True (yes collision) if you end up outside the bounds of the map
         if(left_tile < 0):
-            left_tile = 0
+            return True
+            #left_tile = 0
         if(right_tile >= self.gridwidth):
-            right_tile = self.gridwidth - 1
+            return True
+            # right_tile = self.gridwidth - 1
         if(top_tile < 0):
-            top_tile = 0
+            return True
+            # top_tile = 0
         if(bottom_tile >= self.gridheight):
-            bottom_tile = self.gridheight - 1
+            return True
+            # bottom_tile = self.gridheight - 1
 
         i = left_tile;
         while(i <= right_tile):

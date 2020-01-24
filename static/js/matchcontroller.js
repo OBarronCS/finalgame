@@ -133,7 +133,7 @@ export default class MatchConnection {
                 this.snapback();
             }
             const e = this.client.entity
-            window.renderer.updateScreen(e)
+            window.renderer.updateScreen(e, this.tilemap)
         }
         this.lasttimestamp = this_timestamp;
     }

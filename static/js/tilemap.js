@@ -10,6 +10,14 @@ export default class TileMap {
         this.gridheight = serverinfo["winfo"]["h"]
         this.gridwidth = serverinfo["winfo"]["w"]
        
+
+        this.pixelwidth = this.cellwidth * this.gridwidth
+        this.pixelheight = this.cellwidth * this.gridheight
+
+
+        console.log(this.gridheight)
+        console.log(this.gridwidth)
+
         this.tilemap = []
 
         for(let i = 0; i < this.gridheight;i++){
@@ -51,10 +59,10 @@ export default class TileMap {
         // console.log(`${left_tile},${right_tile},${top_tile},${bottom_tile}`)
 
 
-        if(left_tile < 0) left_tile = 0
-        if(right_tile >= self.gridwidth)  right_tile = self.gridwidth - 1
-        if(top_tile < 0)  top_tile = 0
-        if(bottom_tile >= self.gridheight) bottom_tile = self.gridheight - 1
+        if(left_tile < 0) return true; //left_tile = 0
+        if(right_tile >= this.gridwidth)  return true; //right_tile = self.gridwidth - 1
+        if(top_tile < 0)  return true; //top_tile = 0
+        if(bottom_tile >= this.gridheight) return true; //bottom_tile = self.gridheight - 1
 
 
         let i = left_tile;
