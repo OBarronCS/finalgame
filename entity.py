@@ -24,7 +24,8 @@ class Entity:
         # [event_id, entity_id, x, y, angle, hp]
         return [self.entity_id, int(round(self.x)), int(round(self.y)), round(self.angle), self.health]
 
-
+    def death(self):
+        pass
 
     def applyInput(self,move_data, angle_change):
         self.angle += angle_change;

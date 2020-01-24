@@ -94,8 +94,8 @@ export default class ClientObjectController {
         //this code slowly adjusts our position to where we should be
         if(this.adjusting){
             //console.log("adjust loop")
-            const maxtween_x = .1 * 2.5//this.adjust_x;
-            const maxtween_y = .1 * 2.5//this.adjust_y;
+            const maxtween_x = .1 * 3.5//this.adjust_x;
+            const maxtween_y = .1 * 3.5//this.adjust_y;
 
             let cx = this.entity.getX();
             let cy = this.entity.getY();
@@ -283,7 +283,7 @@ export default class ClientObjectController {
             this.adjust_y = 0;
 
             return;
-        } else if(distance > 9 && !this.adjusting){
+        } else if(distance > 7 && !this.adjusting){
             console.log("ADJUSTING")
 
             // these nums tell us how much ahead we are on each axis 

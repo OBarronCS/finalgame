@@ -59,9 +59,16 @@ export default class Entity {
 
     // this function is called every step
     interpolate(target_time){
-        this.updateHealth();
+        if(this.state_buffer.length != 0){
+            let new_hp = this.state_buffer[this.state_buffer.length - 1][1]["h"]
+            this.health = new_hp
+
+            this.updateHealth();
+        }
 
         if(this.state_buffer.length >= 2){
+
+            
             while(this.state_buffer.length > 2 && target_time >= this.state_buffer[1][0]){
                 // removes first index
                 this.state_buffer.shift();

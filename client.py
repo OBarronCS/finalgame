@@ -59,8 +59,11 @@ class Client:
         # rough average. later can make it favor recent ones more
         self.ping = ceil(sum(self.ping_list) / len(self.ping_list))
 
-    
     def processInput(self, tick):
+        if(self.entity.health <= 0):
+            self.entity.health = 100
+
+
         self.move[0] += self.next_move[0];
         self.move[1] += self.next_move[1];
         

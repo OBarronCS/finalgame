@@ -228,12 +228,19 @@ export default class MatchConnection {
                         }
                     }  
                 } else if(id == 2){ //player damaged
+                    console.log("damaged")
+                    // THIS SYSTEM WAS MOVED TO BE CONSTANT INFO STREAM
+                    /*
                     let e = this.entities[events[k][1]]
                     if(e != null){
                         e.health = events[k][2];
                     }
-                } else if(id == 3){
+                    */
+                } else if(id == 3){ // create projectile
                     new FixedEntity(this, events[k][1], events[k][2], events[k][3], events[k][4], events[k][5], events[k][6], events[k][7])
+                } // TODO: Player Death
+                else {
+                    console.log("Unsupported Event Received")
                 }
             }
 
