@@ -157,8 +157,10 @@ class Game(threading.Thread):
     # connects a new client to this game
     def addNewClient(self,sid):
         #random spawn locations
-        spawn_x = random.randint(50,500);
-        spawn_y = random.randint(50,350);
+        spawn = self.tilemap.getOpenCoords()
+
+        spawn_x = spawn[0]
+        spawn_y = spawn[1]
 
         # gives new client an unique player_id
         new_client = client.Client(self, 60 / self.tickrate , self.entity_id_num, sid);

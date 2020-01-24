@@ -20,6 +20,7 @@ class TileMap:
         self.gridheight = floor(height/cellwidth)
 
         self.tilemap = [[Tile.EMPTY for x in range(self.gridwidth)] for y in range(self.gridheight)]
+        self.empty_tiles = []
         self.walls_send = []
         self.addWalls()
         
@@ -39,6 +40,8 @@ class TileMap:
             while(k < self.gridwidth):
                 if self.tilemap[j][k] == Tile.WALL:
                     self.walls_send.append([j,k])
+                elif self.tilemap[j][k] == Tile.EMPTY:
+                    self.empty_tiles.append([j,k])
                 k += 1
             j += 1
 
@@ -49,3 +52,7 @@ class TileMap:
     def getWalls(self):
         return self.walls_send
     
+    def getOpenCoords(self):
+        gridspot = random.choice(self.empty_tiles)
+
+        return [((i * self.cellwidth) + (self.cellwidth/2)) for i in gridspot]
