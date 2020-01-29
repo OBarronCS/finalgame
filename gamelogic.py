@@ -16,7 +16,7 @@ class Game(threading.Thread):
         self.tickrate = 20
 
         self.collision = collisionhandler.CollisionHandler(self)
-        self.tilemap = tilemap.TileMap(2048 / 2, 2048 / 2, 32)
+        self.tilemap = tilemap.TileMap(2048, 2048, 32)
 
         # This one is not in used RN
         self.last_processed_input = [];

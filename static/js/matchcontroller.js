@@ -259,7 +259,7 @@ export default class MatchConnection {
 
                 let current_entity = this.entities[id]
  
-                console.log(entity_state["h"])
+                // console.log(entity_state["h"])
 
                 if (this.client.entity_id == id){
                     //if it is us, reconcile our position with client side prediction

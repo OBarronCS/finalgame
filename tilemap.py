@@ -28,7 +28,7 @@ class TileMap:
     def addWalls(self):
 
         i = 0
-        while(i < 1000):
+        while(i < 450):
             if(random.random() > .4):
                 self.tilemap[floor(random.random() * self.gridheight)][floor(random.random() * self.gridwidth)] = Tile.WALL
 

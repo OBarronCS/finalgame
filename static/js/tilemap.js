@@ -70,7 +70,7 @@ export default class TileMap {
             let j = top_tile
             while(j <= bottom_tile){
                 if(this.tilemap[i][j] == 1){
-                    console.log("WALL COLLISION")
+                    // console.log("WALL COLLISION")
                     return true
                 }
                 j += 1
