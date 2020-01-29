@@ -38,7 +38,9 @@ export default class Entity {
         // first index is timestamp, second is info
     }
 
-    updateHealth(){
+    updateHealth(new_health){
+        this.health = new_health
+
         this.health_back.clear()
         this.health_front.clear()
 
@@ -59,16 +61,7 @@ export default class Entity {
 
     // this function is called every step
     interpolate(target_time){
-        if(this.state_buffer.length != 0){
-            let new_hp = this.state_buffer[this.state_buffer.length - 1][1]["h"]
-            this.health = new_hp
-
-            this.updateHealth();
-        }
-
         if(this.state_buffer.length >= 2){
-
-            
             while(this.state_buffer.length > 2 && target_time >= this.state_buffer[1][0]){
                 // removes first index
                 this.state_buffer.shift();
@@ -99,6 +92,8 @@ export default class Entity {
         } else {
             this.setPosition(this.state_buffer[0][1]["x"],this.state_buffer[0][1]["y"])
         }
+
+        this.updateHealth(this.health)
     }
 
     turnByDegrees(degrees){

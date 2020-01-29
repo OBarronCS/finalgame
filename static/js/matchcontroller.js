@@ -259,11 +259,15 @@ export default class MatchConnection {
 
                 let current_entity = this.entities[id]
  
+                console.log(entity_state["h"])
+
                 if (this.client.entity_id == id){
                     //if it is us, reconcile our position with client side prediction
                     this.client.reconcile(entity_state,verified_input)
+                    this.client.entity.updateHealth(entity_state["h"])
                 } else {
                     current_entity.state_buffer.push([data["timestamp"],entity_state])
+                    current_entity.updateHealth(entity_state["h"])
                 }
             }
         });

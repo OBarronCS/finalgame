@@ -87,15 +87,12 @@ export default class ClientObjectController {
     }
 
     processInputs(dt){
-        // moves health bar to be over myself
-        this.entity.updateHealth();
-
         //not only process inputs, but interpolate me a bit
         //this code slowly adjusts our position to where we should be
         if(this.adjusting){
             //console.log("adjust loop")
-            const maxtween_x = .1 * 3.5//this.adjust_x;
-            const maxtween_y = .1 * 3.5//this.adjust_y;
+            const maxtween_x = .1 * 6//this.adjust_x;
+            const maxtween_y = .1 * 6//this.adjust_y;
 
             let cx = this.entity.getX();
             let cy = this.entity.getY();
@@ -230,6 +227,8 @@ export default class ClientObjectController {
             window.socket.emit("cmd", sample_input.horz, sample_input.vert, this.input_number, angle_delta, mousedown)
             this.input_number += 1;
         }
+
+        this.entity.updateHealth(this.entity.health)
     }
 
     //get server state and last authorized input, and from that get our current position
