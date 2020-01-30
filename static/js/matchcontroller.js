@@ -251,8 +251,10 @@ export default class MatchConnection {
                 // immediately create entity for new objects
                 if( !this.entities[id] ){
                     let new_entity = new Entity(entity_state["x"],entity_state["y"],id);
+                    new_entity.max_health = entity_state["h"]
                     new_entity.setSprite("static/images/player.png")
     
+
                     this.entities[id] = new_entity;
                     this.entitylist.push(new_entity)
                 }

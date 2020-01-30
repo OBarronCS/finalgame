@@ -11,7 +11,8 @@ export default class Entity {
 
         this.radius = 11;
 
-        this.health = 100;
+        this.max_health = 100
+        this.health = this.max_health;
 
         this.sprite = null
         
@@ -39,6 +40,9 @@ export default class Entity {
     }
 
     updateHealth(new_health){
+        if(new_health > this.max_health){
+            this.max_health = new_health
+        }
         this.health = new_health
 
         this.health_back.clear()
@@ -49,7 +53,7 @@ export default class Entity {
         this.health_back.endFill()
 
         this.health_front.beginFill(0x1cbd5a)
-        this.health_front.drawRect(this.x - (this.health_length / 2), this.y - 21, (Math.max(0,this.health)/100) * this.health_length, 6)
+        this.health_front.drawRect(this.x - (this.health_length / 2), this.y - 21, (Math.max(0,this.health)/this.max_health) * this.health_length, 6)
         this.health_front.endFill()
 
 

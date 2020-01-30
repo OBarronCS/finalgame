@@ -14,6 +14,7 @@ class Entity:
 
         # collision box is a circle
         self.radius = 11
+        self.r_squared = self.radius**2
 
         self.health = 100
         self.hitbox = hitbox.HitBox(x + self.radius, y - self.radius, x - self.radius, y + self.radius)

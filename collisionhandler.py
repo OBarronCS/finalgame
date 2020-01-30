@@ -26,6 +26,14 @@ class CollisionHandler:
         
         for proj in self.to_destroy:
             self.destroy_proj(proj)
+        
+        for bot in self.match.spawncontrol.entities:
+            for entity in self.match.playerentities:
+                dis_squared = (bot.x - entity.x)**2 + (bot.y - entity.y)**2
+                if dis_squared < entity.r_squared + 2:
+                    entity.health -= .8
+                    self.match.events.append([2,entity.entity_id,entity.health])
+            
 
         # print(len(self.projectiles))
         self.to_destroy = []
