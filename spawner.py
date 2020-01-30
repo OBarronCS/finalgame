@@ -24,7 +24,7 @@ class Spawner:
 
 
             if biggest_distance < 1000**2:
-                self.spawncontrol.addEntity(self.x + ((random.random() - 1) * 25), self.y + ((random.random() - 1) * 25))
+                self.spawncontrol.addEntity(self.x + ((random.random() * 2 - 1) * 5), self.y + ((random.random() * 2- 1) * 5))
 
 
 
