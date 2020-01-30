@@ -2,7 +2,7 @@
 import eventlet;
 eventlet.monkey_patch();
 
-import entity, client, threading, time, random, collisionhandler, tilemap;
+import entity, client, threading, time, random, collisionhandler, tilemap, spawncontrol
 
 class Game(threading.Thread):
     # Game loop in here?
@@ -13,10 +13,15 @@ class Game(threading.Thread):
         self.entity_id_num = 0;
         self.clients = [];
         self.entities = [];
+
+        # used for bots to lock onto
+        self.playerentities = [];
+
         self.tickrate = 20
 
+        self.spawncontrol = spawncontrol.SpawnControl(self)
         self.collision = collisionhandler.CollisionHandler(self)
-        self.tilemap = tilemap.TileMap(2048, 2048, 32)
+        self.tilemap = tilemap.TileMap(self, 2048, 2048, 32)
 
         # This one is not in used RN
         self.last_processed_input = [];
@@ -56,11 +61,21 @@ class Game(threading.Thread):
         # removes all reference to this player and his entity
         del self.sid_to_client[sid]
         self.clients.remove(remove_client);
-        self.entities.remove(remove_entity);
+
+        self.deleteEntity(remove_entity)
 
         # have to notify people that he has died
 
-        self.events.append([1, remove_entity.entity_id])
+        
+
+    def deleteEntity(self, entity):
+        if entity in self.entities:
+            self.entities.remove(entity)
+        
+        if entity in self.playerentities:
+            self.playerentities.remove(entity)
+        
+        self.events.append([1, entity.entity_id])
 
 
 
@@ -72,10 +87,13 @@ class Game(threading.Thread):
         game_messages = {};
         world_state = []
 
+        for entity in self.entities:
+            world_state.append(entity.getState())
+        '''
         for client in self.clients:
             entity = client.entity;
             world_state.append(entity.getState())
-
+        '''
 
         game_messages.update({"state":world_state})
         game_messages.update({"timestamp":time_ms})
@@ -129,6 +147,7 @@ class Game(threading.Thread):
 
                     self.processInputs();
                     self.collision.step(dt)
+                    self.spawncontrol.step()
 
                     accumulator -= dt;
                     t += dt;
@@ -166,15 +185,18 @@ class Game(threading.Thread):
         new_client = client.Client(self, 60 / self.tickrate , self.entity_id_num, sid);
         self.entity_id_num += 1;
 
-        new_entity = entity.Entity(self,spawn_x, spawn_y)
+        new_entity = entity.Entity(self,spawn_x, spawn_y, False)
         new_entity.entity_id = new_client.player_id;
 
         # give client object a reference to the entity they are controlling
         new_client.entity = new_entity;
 
         self.entities.append(new_entity)
+        self.playerentities.append(new_entity)
+
         self.clients.append(new_client)
+
+
         self.sid_to_client.update({sid:new_client});
 
-        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate, "winfo":self.tilemap.getTileMapInfo() , "walls":self.tilemap.getWalls(), "timestamp":int(time.time() * 1000)}, room = sid)
-    
+        self.socketio.emit("join match", {"player_id":new_client.player_id,"state":new_entity.getState(), "tickrate":self.tickrate, "winfo":self.tilemap.getTileMapInfo() , "walls":self.tilemap.getWalls(), "spawners":self.tilemap.getSpawners(),"timestamp":int(time.time() * 1000)}, room = sid)

@@ -31,6 +31,7 @@ export default class TileMap {
 
 
         const walls = serverinfo["walls"]
+        const spawners = serverinfo["spawners"]
 
         for(let i = 0; i < walls.length;i++){
             this.tilemap[walls[i][0]][walls[i][1]] = 1
@@ -45,6 +46,23 @@ export default class TileMap {
 
             w.x = walls[i][0] * this.cellwidth;
             w.y = walls[i][1] * this.cellwidth;
+
+            window.renderer.addSprite(w,-1)
+        }
+
+        for(let i = 0; i < spawners.length;i++){
+            this.tilemap[spawners[i][0]][spawners[i][1]] = 2
+
+
+            const w  = new Sprite(
+                resources["static/images/spawner.png"].texture
+            );
+
+            w.width = this.cellwidth;
+            w.height = this.cellwidth;
+
+            w.x = spawners[i][0] * this.cellwidth;
+            w.y = spawners[i][1] * this.cellwidth;
 
             window.renderer.addSprite(w,-1)
         }

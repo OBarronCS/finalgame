@@ -20,7 +20,7 @@ export default class Renderer {
         displayDiv.appendChild(this.pixiapp.view);
         console.log("Renderer loaded")
 
-        const game_sprites = ["static/images/player.png", "static/images/basic_proj.png","static/images/basic_wall.png"];
+        const game_sprites = ["static/images/spawner.png","static/images/player.png", "static/images/basic_proj.png","static/images/basic_wall.png"];
 
         PIXI.Loader.shared
             .add(game_sprites)

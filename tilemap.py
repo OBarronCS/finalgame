@@ -2,16 +2,19 @@
 # defines world dimensions
 
 import enum 
+import spawner
 from math import floor
 import random
 # creating enumerations using class 
 class Tile(enum.Enum): 
     EMPTY = 0
     WALL = 1
+    SPAWNER = 2
 
 
 class TileMap:
-    def __init__(self, width, height, cellwidth):
+    def __init__(self, match, width, height, cellwidth):
+        self.match = match
         self.width = width
         self.height = height
         self.cellwidth = cellwidth
@@ -22,7 +25,10 @@ class TileMap:
         self.tilemap = [[Tile.EMPTY for x in range(self.gridwidth)] for y in range(self.gridheight)]
         self.empty_tiles = []
         self.walls_send = []
+        self.spawners_send = []
+
         self.addWalls()
+        self.addSpawners()
         
     # temporary
     def addWalls(self):
@@ -40,10 +46,34 @@ class TileMap:
             while(k < self.gridwidth):
                 if self.tilemap[j][k] == Tile.WALL:
                     self.walls_send.append([j,k])
+                
+                k += 1
+            j += 1
+
+    def addSpawners(self):
+        i = 0
+        while(i < 10):
+            gridx = floor(random.random() * self.gridheight)
+            gridy = floor(random.random() * self.gridwidth)
+            self.tilemap[gridx][gridy] = Tile.SPAWNER
+            
+            s = spawner.Spawner(self.match.spawncontrol, gridx * self.cellwidth + (self.cellwidth / 2), gridy * self.cellwidth + (self.cellwidth / 2))
+
+            self.match.spawncontrol.spawners.append(s)
+            
+            i += 1
+            
+        j = 0
+        while(j < self.gridheight):
+            k = 0
+            while(k < self.gridwidth):
+                if self.tilemap[j][k] == Tile.SPAWNER:
+                    self.spawners_send.append([j,k])
                 elif self.tilemap[j][k] == Tile.EMPTY:
                     self.empty_tiles.append([j,k])
                 k += 1
             j += 1
+
 
     # returns wall to be sent to client
     def getTileMapInfo(self):
@@ -51,6 +81,9 @@ class TileMap:
 
     def getWalls(self):
         return self.walls_send
+    
+    def getSpawners(self):
+        return self.spawners_send
     
     def wallCollision(self, hitbox):
         left_tile = floor(hitbox.left / self.cellwidth)

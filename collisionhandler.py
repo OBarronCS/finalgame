@@ -18,7 +18,8 @@ class CollisionHandler:
                     dis = sqrt((proj.x - entity.x)**2 + (proj.y - entity.y)**2)
                     if dis < entity.radius + 2:
                         # print("COLLISION")
-                        entity.health -= 6
+                        entity.health -= 11
+                        self.checkBotDeath(entity)
                         self.match.events.append([2,entity.entity_id,entity.health])
                         self.to_destroy.append(proj)
                         break;
@@ -39,6 +40,13 @@ class CollisionHandler:
 
         # checking for their collisions
 
+    def checkBotDeath(self, entity):
+        if entity.health > 0:
+            return
+
+        for bot in self.match.spawncontrol.entities:
+            if bot == entity:
+                self.match.deleteEntity(entity)
 
     def start_projectile(self, proj):
         self.projectiles.append(proj)
@@ -61,10 +69,15 @@ class CollisionHandler:
                 if entity.entity_id != origin_id:
                     dis = sqrt((x - entity.x)**2 + (y - entity.y)**2)
                     if dis < entity.radius + 2:
-                        # print("COLLISION")
-                        entity.health -= 6
+                        
+                        sofar = sqrt((x - start_x)**2 + (y - start_y)**2)
+                        
+                        percent = sofar/length
+
+                        entity.health -= 3.5 * percent
+                        self.checkBotDeath(entity)
                         self.match.events.append([2,entity.entity_id,entity.health])
-                        return;
+                        
             x += inc_x
             y += inc_y
             i += 1;

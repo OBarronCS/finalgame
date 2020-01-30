@@ -53,7 +53,7 @@ export default class Entity {
         this.health_front.endFill()
 
 
-        this.health_text.text = `HP: ${this.health}`
+        this.health_text.text = `HP: ${Math.round(this.health)}`
 
         this.health_text.x = this.x - 14
         this.health_text.y = this.y - 30
