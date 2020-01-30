@@ -49,6 +49,9 @@ class SpawnControl:
 
                     entity.current_dx = move_command[0]
                     entity.current_dy = move_command[1]
+                else:
+                    entity.current_dx = (random.random()  * 2 - 1) * 1.5
+                    entity.current_dy = (random.random() * 2 - 1) * 1.5
         
         # actually moves them
         for entity in self.entities:

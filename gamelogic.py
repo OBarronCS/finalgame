@@ -71,6 +71,9 @@ class Game(threading.Thread):
     def deleteEntity(self, entity):
         if entity in self.entities:
             self.entities.remove(entity)
+
+        if entity in self.spawncontrol.entities:
+            self.spawncontrol.entities.remove(entity)
         
         if entity in self.playerentities:
             self.playerentities.remove(entity)
